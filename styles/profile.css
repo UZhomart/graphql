@@ -12,10 +12,12 @@
     background: linear-gradient(135deg, var(--bg-color-light) 0%, rgba(34, 211, 238, 0.1) 50%, var(--bg-color-light) 100%);
     border-image: linear-gradient(90deg, var(--primary-color), var(--secondary-color), var(--success-color)) 1;
     margin-bottom: 20px;
-    position: fixed;
+    position: sticky;
+    top: 0;
     width: 100%;
     backdrop-filter: blur(10px);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    z-index: 100;
 }
 
 .user-greeting {
@@ -74,7 +76,7 @@
 }
 
 .profile-container {
-    padding-top: 6.5rem;
+    padding-top: 0;
 }
 
 #audits-info {
@@ -336,7 +338,7 @@ svg {
         font-size: 13px;
     }
     .profile-container {
-        padding-top: 8rem;
+        padding-top: 0;
     }
 }
 
