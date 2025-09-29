@@ -4,6 +4,7 @@ import { renderTransactionsChart } from "./graphs/transactionsChart.js";
 import { renderProfileInfo } from "./profile/renderProfileInfo.js";
 import { renderProgramSelector } from "./program-selector/renderProgramSelector.js";
 import { renderGlobalStatistics } from "./global-statistics/renderGlobalStatistics.js";
+import { renderParticipantsInfo } from "./participants-info/renderParticipantsInfo.js";
 
 export const renderProfilePage = (user) => {
     document.body.innerHTML = ``;
@@ -26,6 +27,7 @@ export const renderProfilePage = (user) => {
             <div id="profile-info"></div>
             <div id="program-selector"></div>
             <div id="global-statistics"></div>
+            <div id="participants-info"></div>
             <div id="transaction-info"></div>
             <div id="transactions-chart"></div>
             <div id="skills-chart"></div>
@@ -38,6 +40,7 @@ export const renderProfilePage = (user) => {
     renderProfileInfo()
     renderProgramSelector()
     renderGlobalStatistics()
+    renderParticipantsInfo()
     renderSkillsChart()
     renderTransactionsChart()
 };
