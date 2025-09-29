@@ -135,3 +135,46 @@ query ViaUsers {
     lastName
   }
 }`
+
+export const GET_FINISHED_PROJECT_GROUPS = /*gql*/`
+query MyFinishedProjectGroupIds {
+  group(
+    where: {
+      object: { type: { _eq: "project" } }
+      status: { _eq: finished }
+    }
+    order_by: { updatedAt: desc }
+  ) {
+    id
+  }
+}`
+
+export const GET_TEAMWORK_INFO_V3 = /*gql*/`
+query GetTeamworkInfoV3($userId: Int!, $groupIds: [Int!]) {
+  group_user(
+    where: {
+      group: {
+        id: { _in: $groupIds }
+        members: { userId: { _eq: $userId } }
+      }
+      accepted: { _eq: true }
+    }
+    order_by: [{ userId: desc }]
+  ) {
+    user {
+      id
+      firstName
+      lastName
+      login
+    }
+    group {
+      id
+      status
+      object { 
+        id 
+        name 
+        type 
+      }
+    }
+  }
+}`

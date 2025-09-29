@@ -15,6 +15,8 @@ export const renderProfileInfo = async () => {
 
             if (response && response.data.user[0]) {
                 data = response.data.user[0];
+                // Store current user ID for teamwork filtering
+                localStorage.setItem('currentUserId', data.id.toString());
             } else {
                 throw new Error("Invalid data received!");
             }

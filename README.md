@@ -52,10 +52,20 @@ A modern, interactive dashboard for Tomorrow School students to view their learn
 
 #### 👥 Participants Info
 
-- **User Search**: Search participants by login, first name, or last name
+- **Smart Search**: Priority-based search with exact login matching
 - **Public Data**: Display ID, Login, First Name, and Last Name
-- **Responsive Cards**: Modern card layout with hover effects
+- **Responsive Cards**: Modern card layout with hover effects and exact match highlighting
 - **Real-time Search**: Instant filtering as you type
+- **Teamwork Analytics**: Comprehensive collaboration statistics
+
+#### 🤝 Teamwork Analytics
+
+- **Unique Teammates**: Count of different people worked together with
+- **Team Projects**: Number of unique collaborative projects (excluding solo work)
+- **Solo Projects**: Individual projects completed with detailed popup list
+- **Collaboration Details**: Complete list of teammates and shared projects
+- **Smart Filtering**: Automatic separation of team vs solo projects
+- **Interactive Statistics**: Clickable cards with detailed information popups
 
 #### 📊 Data Visualizations
 
@@ -84,7 +94,8 @@ A modern, interactive dashboard for Tomorrow School students to view their learn
 - Comprehensive profile information with expandable details
 - Program selector with dynamic statistics
 - Global statistics cards with interactive popups
-- Participants search and information lookup
+- Smart participants search with exact match priority
+- Advanced teamwork analytics with team/solo project separation
 - Beautiful data visualizations
 
 ## Technologies Used
@@ -145,7 +156,9 @@ graphql-master/
 │   │   │   ├── programDetailsPopup.js # Unified modal for XP, Level, and Transaction details
 │   │   │   └── renderProgramSelector.js # Program selection buttons and statistics cards
 │   │   ├── 📁 participants-info/
-│   │   │   └── renderParticipantsInfo.js # Participants search and information display component
+│   │   │   ├── renderParticipantsInfo.js # Participants search and information display component
+│   │   │   ├── soloProjectsPopup.js     # Solo projects popup modal with detailed list
+│   │   │   └── teamworkStatus.js        # Teamwork analytics with team/solo project separation
 │   │   ├── authComponent.js        # Login page with glassmorphism design and Tomorrow School branding
 │   │   └── profileComponent.js     # Main dashboard component orchestrating all sections
 │   ├── 📁 utils/
@@ -170,7 +183,7 @@ graphql-master/
 #### 🔐 Authentication & API
 
 - **`authRequests.js`**: Handles JWT authentication with Tomorrow School API, includes safe encoding for non-Latin characters
-- **`graphql.js`**: Contains all GraphQL queries for user data, transactions, audits, and project progress
+- **`graphql.js`**: Contains all GraphQL queries for user data, transactions, audits, project progress, participants info, and teamwork analytics with smart filtering (accepted participants only)
 - **`graphqlRequests.js`**: Manages GraphQL requests with proper error handling and JWT token management
 
 #### 🎨 UI Components
@@ -198,6 +211,12 @@ graphql-master/
 - **`successfulProjectsPopup.js`**: Detailed successful projects list with grades and dates
 - **`failedProjectsPopup.js`**: Detailed failed projects list with attempt counts
 
+#### 👥 Participants & Teamwork
+
+- **`renderParticipantsInfo.js`**: Smart participants search with exact match priority and responsive cards
+- **`teamworkStatus.js`**: Comprehensive teamwork analytics with team/solo project separation, collaboration details, and smart filtering for accepted participants only
+- **`soloProjectsPopup.js`**: Interactive popup modal displaying detailed list of individual projects
+
 #### 🛠 Utilities
 
 - **`handleAuth.js`**: Authentication state management, token validation, and logout functionality
@@ -213,7 +232,7 @@ graphql-master/
 - **`profile.css`**: Dashboard styles with modern UI, gradients, and interactive elements
 - **`program-selector.css`**: Program selector styles with interactive cards and hover effects
 - **`global-statistics.css`**: Global statistics section styles with card layouts and modal popups
-- **`participants-info.css`**: Participants info section styles with search interface and responsive card layouts
+- **`participants-info.css`**: Participants info section styles with search interface, teamwork analytics, and responsive card layouts
 
 ## Installation & Setup
 
@@ -282,11 +301,37 @@ The project is automatically deployed to GitHub Pages. Any push to the `main` br
 - **Profile Information**: View and expand your personal details
 - **Program Selector**: Switch between Core Education, Piscine JS, and Piscine Go
 - **Global Statistics**: Click on any statistic card for detailed information
+- **Participants Search**: Search for other students with smart exact-match priority
+- **Teamwork Analytics**: View collaboration statistics and solo project details
 - **Data Visualizations**: Interactive charts showing your progress and skills
 
 ### Logout
 
 Click the "Logout" button in the top-right corner to securely end your session.
+
+## Key Features
+
+### 🔍 Smart Search System
+
+- **Exact Match Priority**: Login searches prioritize exact matches over partial matches
+- **Visual Highlighting**: Exact matches are highlighted with green borders
+- **Multi-field Search**: Search by login, first name, or last name
+- **Real-time Results**: Instant filtering as you type
+
+### 🤝 Advanced Teamwork Analytics
+
+- **Team vs Solo Separation**: Automatic filtering of collaborative vs individual projects
+- **Accepted Participants Only**: Smart filtering to show only confirmed team members (excludes invited but not accepted)
+- **Collaboration Statistics**: Unique teammates count and team project totals
+- **Detailed Project Lists**: Complete breakdown of shared projects with each teammate
+- **Interactive Popups**: Clickable statistics with detailed information modals
+
+### 📊 Comprehensive Statistics
+
+- **Program-specific Data**: Dynamic statistics for Core Education, Piscine JS, and Piscine Go
+- **Global Analytics**: Audit ratios, project success rates, and performance metrics
+- **Visual Data**: Interactive charts and graphs for progress tracking
+- **Real-time Updates**: Statistics update based on selected program
 
 ## Authentication
 

@@ -1,5 +1,7 @@
 import { fetchGraphQL } from '../../api/graphqlRequests.js';
 import { GET_PARTICIPANTS_INFO } from '../../api/graphql.js';
+import { renderTeamworkStatus } from './teamworkStatus.js';
+import './soloProjectsPopup.js';
 
 let participantsData = [];
 
@@ -25,6 +27,7 @@ export async function renderParticipantsInfo() {
                     </div>
                 </div>
                 <div id="participant-results" class="participant-results"></div>
+                <div id="teamwork-status" class="teamwork-status"></div>
             </div>
         </div>
     `;
@@ -86,12 +89,19 @@ function searchParticipant() {
         return;
     }
 
-    // Search for participants
-    const foundParticipants = participantsData.filter(participant => 
-        participant.login.toLowerCase().includes(searchTerm) ||
-        (participant.firstName && participant.firstName.toLowerCase().includes(searchTerm)) ||
-        (participant.lastName && participant.lastName.toLowerCase().includes(searchTerm))
+    // Search for participants - prioritize exact login match
+    let foundParticipants = participantsData.filter(participant => 
+        participant.login.toLowerCase() === searchTerm
     );
+    
+    // If no exact match, search for partial matches
+    if (foundParticipants.length === 0) {
+        foundParticipants = participantsData.filter(participant => 
+            participant.login.toLowerCase().includes(searchTerm) ||
+            (participant.firstName && participant.firstName.toLowerCase().includes(searchTerm)) ||
+            (participant.lastName && participant.lastName.toLowerCase().includes(searchTerm))
+        );
+    }
 
     if (foundParticipants.length === 0) {
         resultsContainer.innerHTML = '<p class="no-results">No participants found with that login</p>';
@@ -103,8 +113,11 @@ function searchParticipant() {
     
     foundParticipants.forEach(participant => {
         const fullName = `${participant.firstName || ''} ${participant.lastName || ''}`.trim();
+        const isExactMatch = participant.login.toLowerCase() === searchTerm;
+        const cardClass = isExactMatch ? 'participant-card exact-match' : 'participant-card';
+        
         html += `
-            <div class="participant-card">
+            <div class="${cardClass}">
                 <div class="participant-info">
                     <div class="participant-id">
                         <span class="label">ID:</span>
@@ -125,4 +138,18 @@ function searchParticipant() {
     
     html += '</div>';
     resultsContainer.innerHTML = html;
+    
+    // Load teamwork status for the first found participant
+    if (foundParticipants.length > 0) {
+        const firstParticipant = foundParticipants[0];
+        // Store the searched user ID for teamwork status
+        localStorage.setItem('searchedUserId', firstParticipant.id.toString());
+        renderTeamworkStatus(firstParticipant.id);
+    } else {
+        // Clear teamwork status if no participants found
+        const teamworkContainer = document.getElementById('teamwork-status');
+        if (teamworkContainer) {
+            teamworkContainer.innerHTML = '';
+        }
+    }
 }
