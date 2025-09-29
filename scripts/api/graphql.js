@@ -125,3 +125,13 @@ query GetTransactions($name: String!) {
     createdAt
   }
 }`
+
+export const GET_PARTICIPANTS_INFO = /*gql*/`
+query ViaUsers {
+  user_public_view {
+    id
+    login
+    firstName
+    lastName
+  }
+}`

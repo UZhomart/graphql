@@ -127,6 +127,8 @@
 
 .audit-ratio-content {
     padding: 30px;
+    max-height: 60vh;
+    overflow-y: auto;
 }
 
 .audit-ratio-summary {
@@ -341,6 +343,8 @@
 
 .audits-content {
     padding: 30px;
+    max-height: 60vh;
+    overflow-y: auto;
 }
 
 .audits-summary {
@@ -656,6 +660,7 @@
     .audits-content,
     .projects-content {
         padding: 20px;
+        max-height: 70vh;
     }
     
     .audit-ratio-summary,

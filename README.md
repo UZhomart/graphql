@@ -14,7 +14,6 @@ A modern, interactive dashboard for Tomorrow School students to view their learn
 - [Project Structure](#project-structure)
 - [Installation & Setup](#installation--setup)
 - [Usage](#usage)
-- [GraphQL Queries](#graphql-queries)
 - [Authentication](#authentication)
 - [Hosting](#hosting)
 - [License](#license)
@@ -51,6 +50,13 @@ A modern, interactive dashboard for Tomorrow School students to view their learn
 - **Project Statistics**: Successful and failed project counts
 - **Interactive Modals**: Detailed information for each statistic
 
+#### 👥 Participants Info
+
+- **User Search**: Search participants by login, first name, or last name
+- **Public Data**: Display ID, Login, First Name, and Last Name
+- **Responsive Cards**: Modern card layout with hover effects
+- **Real-time Search**: Instant filtering as you type
+
 #### 📊 Data Visualizations
 
 - **XP Progress Chart**: Interactive SVG line chart showing XP growth over time
@@ -78,6 +84,7 @@ A modern, interactive dashboard for Tomorrow School students to view their learn
 - Comprehensive profile information with expandable details
 - Program selector with dynamic statistics
 - Global statistics cards with interactive popups
+- Participants search and information lookup
 - Beautiful data visualizations
 
 ## Technologies Used
@@ -137,6 +144,8 @@ graphql-master/
 │   │   ├── 📁 program-selector/
 │   │   │   ├── programDetailsPopup.js # Unified modal for XP, Level, and Transaction details
 │   │   │   └── renderProgramSelector.js # Program selection buttons and statistics cards
+│   │   ├── 📁 participants-info/
+│   │   │   └── renderParticipantsInfo.js # Participants search and information display component
 │   │   ├── authComponent.js        # Login page with glassmorphism design and Tomorrow School branding
 │   │   └── profileComponent.js     # Main dashboard component orchestrating all sections
 │   ├── 📁 utils/
@@ -149,6 +158,7 @@ graphql-master/
 │   ├── app.css                    # Global styles, CSS variables, and base styling
 │   ├── global-statistics.css      # Global statistics section with card layouts and popups
 │   ├── login.css                  # Login page styles with glassmorphism and animations
+│   ├── participants-info.css      # Participants info section with search and card layouts
 │   ├── profile.css                # Dashboard styles with gradients and modern UI
 │   └── program-selector.css       # Program selector styles with interactive cards
 ├── index.html                     # Single page application entry point
@@ -170,6 +180,7 @@ graphql-master/
 - **`renderProfileInfo.js`**: User profile information with expandable "More" section for additional details
 - **`renderProgramSelector.js`**: Program selection (Core Education, Piscine JS, Piscine Go) with dynamic statistics
 - **`renderGlobalStatistics.js`**: Global statistics container with audit ratio, audits, and project statistics
+- **`renderParticipantsInfo.js`**: Participants search and information display with login-based lookup
 
 #### 📊 Data Visualization
 
@@ -202,6 +213,7 @@ graphql-master/
 - **`profile.css`**: Dashboard styles with modern UI, gradients, and interactive elements
 - **`program-selector.css`**: Program selector styles with interactive cards and hover effects
 - **`global-statistics.css`**: Global statistics section styles with card layouts and modal popups
+- **`participants-info.css`**: Participants info section styles with search interface and responsive card layouts
 
 ## Installation & Setup
 
@@ -275,82 +287,6 @@ The project is automatically deployed to GitHub Pages. Any push to the `main` br
 ### Logout
 
 Click the "Logout" button in the top-right corner to securely end your session.
-
-## GraphQL Queries
-
-The application uses various GraphQL queries to fetch user data:
-
-### User Information
-
-```graphql
-query {
-  user {
-    id
-    login
-    firstName
-    lastName
-    email
-    createdAt
-    attrs
-  }
-}
-```
-
-### Program Statistics
-
-```graphql
-query {
-  transaction(where: {type: {_eq: "xp"}}) {
-    amount
-    createdAt
-    path
-    event {
-      object {
-        name
-      }
-    }
-  }
-}
-```
-
-### Audit Data
-
-```graphql
-query {
-  user {
-    auditRatio
-    totalDown
-    totalUp
-    totalUpBonus
-    audits_aggregate(where: {closureType: {_eq: "succeeded"}}) {
-      aggregate {
-        count
-      }
-    }
-  }
-}
-```
-
-### Project Progress
-
-```graphql
-query {
-  progress(where: {object: {type: {_eq: "project"}}}) {
-    id
-    userId
-    grade
-    createdAt
-    updatedAt
-    path
-    object {
-      id
-      name
-      type
-      attrs
-    }
-  }
-}
-```
 
 ## Authentication
 
