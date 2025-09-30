@@ -7,13 +7,16 @@ export const showProgramDetailsPopup = async (program = 'core-education', type =
     overlay.className = 'popup-overlay';
     overlay.innerHTML = /*html*/ `
         <div class="program-popup">
-            <div class="popup-header">
-                <h3>${getProgramName(program)} - ${getTypeTitle(type)}</h3>
+            <div class="program-popup-header">
+                <h3>
+                    <span>📊</span>
+                    ${getProgramName(program)} - ${getTypeTitle(type)}
+                </h3>
                 <button class="close-btn" id="close-program-popup">
                     <i class="fa-solid fa-times"></i>
                 </button>
             </div>
-            <div class="popup-content">
+            <div class="program-popup-content">
                 <div class="loading" id="program-loading">Loading ${getTypeTitle(type).toLowerCase()}...</div>
                 <div class="program-details" id="program-details" style="display: none;">
                     <!-- Content will be populated here -->
@@ -24,16 +27,29 @@ export const showProgramDetailsPopup = async (program = 'core-education', type =
 
     document.body.appendChild(overlay);
 
-    // Add event listeners
-    document.getElementById('close-program-popup').addEventListener('click', () => {
+    // Add close functionality
+    const closeBtn = document.getElementById('close-program-popup');
+    const closePopup = () => {
         document.body.removeChild(overlay);
-    });
+    };
 
+    closeBtn.addEventListener('click', closePopup);
+    
+    // Close on overlay click
     overlay.addEventListener('click', (e) => {
         if (e.target === overlay) {
-            document.body.removeChild(overlay);
+            closePopup();
         }
     });
+
+    // Close on Escape key
+    const handleEscape = (e) => {
+        if (e.key === 'Escape') {
+            closePopup();
+            document.removeEventListener('keydown', handleEscape);
+        }
+    };
+    document.addEventListener('keydown', handleEscape);
 
     // Load program data
     await loadProgramData(program, type);
@@ -192,12 +208,15 @@ function updateXPDetails(transactions, type) {
             <div class="xp-summary">
                 <div class="summary-item">
                     <span class="summary-label">Total XP:</span>
-                    <span class="summary-value">${Math.floor(totalXP )} KB</span>
+                    <span class="summary-value">${Math.floor(totalXP)} KB</span>
                 </div>
                 <div class="summary-item">
                     <span class="summary-label">Transactions:</span>
-
                     <span class="summary-value">${transactions.length}</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Your Level:</span>
+                    <span class="summary-value">27 LVL</span>
                 </div>
             </div>
             <div class="xp-transactions">

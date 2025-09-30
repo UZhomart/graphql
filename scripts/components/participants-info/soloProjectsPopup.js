@@ -4,16 +4,21 @@ export function showSoloProjectsPopup() {
         return;
     }
 
-    const popup = document.createElement('div');
-    popup.className = 'solo-projects-popup';
-    popup.innerHTML = `
-        <div class="popup-overlay" onclick="closeSoloProjectsPopup()"></div>
-        <div class="popup-content">
+    // Create popup overlay
+    const overlay = document.createElement('div');
+    overlay.className = 'popup-overlay';
+    overlay.innerHTML = `
+        <div class="solo-projects-popup">
             <div class="popup-header">
-                <h3>👤 Solo Projects</h3>
-                <button class="popup-close" onclick="closeSoloProjectsPopup()">×</button>
+                <h3>
+                    <span>👤</span>
+                    Solo Projects
+                </h3>
+                <button class="close-btn" id="close-solo-popup">
+                    <i class="fa-solid fa-times"></i>
+                </button>
             </div>
-            <div class="popup-body">
+            <div class="popup-content">
                 <div class="projects-summary">
                     <div class="summary-item">
                         <span class="summary-label">Total Solo Projects:</span>
@@ -32,26 +37,37 @@ export function showSoloProjectsPopup() {
         </div>
     `;
 
-    document.body.appendChild(popup);
+    document.body.appendChild(overlay);
+
+    // Add close functionality
+    const closeBtn = document.getElementById('close-solo-popup');
+    const closePopup = () => {
+        document.body.removeChild(overlay);
+    };
+
+    closeBtn.addEventListener('click', closePopup);
     
-    // Add animation
-    setTimeout(() => {
-        popup.style.opacity = '1';
-        const content = popup.querySelector('.popup-content');
-        content.style.transform = 'scale(1)';
-    }, 10);
+    // Close on overlay click
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+            closePopup();
+        }
+    });
+
+    // Close on Escape key
+    const handleEscape = (e) => {
+        if (e.key === 'Escape') {
+            closePopup();
+            document.removeEventListener('keydown', handleEscape);
+        }
+    };
+    document.addEventListener('keydown', handleEscape);
 }
 
 export function closeSoloProjectsPopup() {
-    const popup = document.querySelector('.solo-projects-popup');
-    if (popup) {
-        popup.style.opacity = '0';
-        const content = popup.querySelector('.popup-content');
-        content.style.transform = 'scale(0.9)';
-        
-        setTimeout(() => {
-            popup.remove();
-        }, 300);
+    const overlay = document.querySelector('.popup-overlay');
+    if (overlay) {
+        document.body.removeChild(overlay);
     }
 }
 
