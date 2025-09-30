@@ -60,6 +60,9 @@ export async function renderActivityHeatmap(userId) {
                     </div>
                 </div>
                 <div class="heatmap-container">
+                    <div class="heatmap-scroll-indicator">
+                        <span class="scroll-hint">← Scroll horizontally to see all hours →</span>
+                    </div>
                     <div class="heatmap-grid">
                         ${renderHeatmapGrid(heatmapData, maxActivity)}
                     </div>
