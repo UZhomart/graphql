@@ -4,7 +4,7 @@ A modern, interactive dashboard for Tomorrow School students to view their learn
 
 ## 🌐 Live Demo
 
-**🔗 [View Live Dashboard](https://uzhomart.github.io/graphql/)**
+**🔗 [View Live Dashboard](https://01.tomorrow-school.ai/)**
 
 ## 📋 Table of Contents
 
@@ -69,8 +69,10 @@ A modern, interactive dashboard for Tomorrow School students to view their learn
 
 #### 📊 Data Visualizations
 
-- **XP Progress Chart**: Interactive SVG line chart showing XP growth over time
-- **Skills Radar Chart**: Comprehensive skills assessment visualization
+- **Activity Heatmap**: Visual representation of learning activity patterns across days and hours
+- **Interactive Tooltips**: Hover to see detailed transaction counts
+- **Kazakhstan Week Format**: Monday-first week display
+- **Peak Time Analysis**: Shows most active day and hour
 - **Responsive Design**: Optimized for all screen sizes
 
 ### 🎨 Modern UI/UX
@@ -132,8 +134,7 @@ graphql-master/
 │   │   ├── graphql.js             # All GraphQL queries (user, transactions, audits, projects)
 │   │   └── graphqlRequests.js     # GraphQL request handler with error management
 │   ├── 📁 app/
-│   │   ├── handleAuth.js          # Authentication state management and logout
-│   │   └── handleProfile.js       # Profile data fetching and user session handling
+│   │   └── handleAuth.js          # Authentication state management and logout
 │   ├── 📁 components/
 │   │   ├── 📁 global-statistics/
 │   │   │   ├── auditRatioPopup.js      # Modal for detailed audit ratio breakdown
@@ -145,13 +146,9 @@ graphql-master/
 │   │   │   ├── renderSuccessfulProjects.js # Successful projects card component
 │   │   │   └── successfulProjectsPopup.js # Modal showing successful projects list
 │   │   ├── 📁 graphs/
-│   │   │   ├── skillsChart.js      # Interactive SVG radar chart for skills assessment
-│   │   │   └── transactionsChart.js # Interactive SVG line chart for XP progress over time
+│   │   │   └── activityHeatmap.js      # D3.js-based activity heatmap visualization
 │   │   ├── 📁 profile/
-│   │   │   ├── renderAudits.js     # Legacy audits component (moved to global-statistics)
-│   │   │   ├── renderLevel.js      # User level display component
-│   │   │   ├── renderProfileInfo.js # Profile information with expandable details
-│   │   │   └── renderTransactions.js # Recent transactions list with scrollable container
+│   │   │   └── renderProfileInfo.js # Profile information with expandable details
 │   │   ├── 📁 program-selector/
 │   │   │   ├── programDetailsPopup.js # Unified modal for XP, Level, and Transaction details
 │   │   │   └── renderProgramSelector.js # Program selection buttons and statistics cards
@@ -197,8 +194,7 @@ graphql-master/
 
 #### 📊 Data Visualization
 
-- **`skillsChart.js`**: Interactive SVG radar chart displaying user skills assessment
-- **`transactionsChart.js`**: Interactive SVG line chart showing XP progress over time
+- **`activityHeatmap.js`**: D3.js-based activity heatmap showing learning patterns across days and hours
 - **`programDetailsPopup.js`**: Unified modal displaying detailed XP, Level, or Transaction information
 
 #### 🎯 Statistics & Analytics

@@ -181,3 +181,96 @@ query GetTeamworkInfoV3($userId: Int!, $groupIds: [Int!]) {
     }
   }
 }`
+
+// Mini Dashboard Queries
+export const GET_USER_STATS = /*gql*/`
+query GetUserStats($userId: Int!) {
+  user(where: {id: {_eq: $userId}}) {
+    id
+    login
+    firstName
+    lastName
+    auditRatio
+    totalDown
+    totalUp
+    totalUpBonus
+    createdAt
+    audits_aggregate {
+      aggregate { count }
+    }
+    failed_audits: audits_aggregate(where: {closureType: {_eq: failed}}) {
+      aggregate { count }
+    }
+  }
+}`
+
+export const GET_USER_PROGRESS = /*gql*/`
+query GetUserProgress($userId: Int!) {
+  progress(where: {userId: {_eq: $userId}, object: {type: {_eq: "project"}}}) {
+    grade
+    createdAt
+    object { 
+      name 
+      type 
+    }
+  }
+}`
+
+export const GET_USER_TRANSACTIONS = /*gql*/`
+query GetUserTransactions($userId: Int!) {
+  transaction(where: {userId: {_eq: $userId}, type: {_eq: "xp"}}) {
+    amount
+    createdAt
+  }
+}`
+
+// Collaboration Map Query
+export const GET_COLLABORATION_DATA = /*gql*/`
+query GetCollaborationData($userId: Int!) {
+  progress(
+    where: {
+      object: {type: {_eq: "project"}}
+      group: {members: {userId: {_eq: $userId}}}
+    }
+  ) {
+    id
+    userId
+    grade
+    createdAt
+    group {
+      id
+      members {
+        userId
+        user {
+          id
+          login
+          firstName
+          lastName
+        }
+      }
+      object {
+        id
+        name
+        type
+      }
+    }
+  }
+}`
+
+// Activity Heatmap Query
+export const GET_ACTIVITY_DATA = /*gql*/`
+query GetActivityData($userId: Int!) {
+  transaction(
+    where: {
+      userId: {_eq: $userId}
+      type: {_eq: "xp"}
+    }
+    order_by: {createdAt: desc}
+  ) {
+    id
+    amount
+    createdAt
+    objectId
+    attrs
+  }
+}`

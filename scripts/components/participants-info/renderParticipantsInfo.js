@@ -139,17 +139,18 @@ function searchParticipant() {
     html += '</div>';
     resultsContainer.innerHTML = html;
     
-    // Load teamwork status for the first found participant
+    // Load teamwork status and new components for the first found participant
     if (foundParticipants.length > 0) {
         const firstParticipant = foundParticipants[0];
         // Store the searched user ID for teamwork status
         localStorage.setItem('searchedUserId', firstParticipant.id.toString());
+        
+        // Render teamwork status for searched user
         renderTeamworkStatus(firstParticipant.id);
     } else {
-        // Clear teamwork status if no participants found
+        // Clear components if no participants found
         const teamworkContainer = document.getElementById('teamwork-status');
-        if (teamworkContainer) {
-            teamworkContainer.innerHTML = '';
-        }
+        
+        if (teamworkContainer) teamworkContainer.innerHTML = '';
     }
 }
