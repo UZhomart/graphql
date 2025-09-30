@@ -268,16 +268,209 @@ svg {
     margin-right: 5px;
 }
 
-#skills-chart {
-    min-width: 90%;
-    /* min-height: 80vh; */
-    background: linear-gradient(135deg, var(--bg-color-light) 0%, rgba(16, 185, 129, 0.05) 100%);
+/* Activity Heatmap Styles */
+.activity-heatmap {
+    background: linear-gradient(135deg, var(--bg-color-light) 0%, rgba(34, 211, 238, 0.05) 100%);
+    border: 1px solid rgba(34, 211, 238, 0.2);
     border-radius: 15px;
-    overflow: hidden;
-    margin: 0 20px 20px;
-    border: 1px solid rgba(16, 185, 129, 0.2);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    padding: 25px;
+    margin: 0;
     backdrop-filter: blur(10px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    max-width: 800px;
+    width: 100%;
+}
+
+.heatmap-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.heatmap-header h3 {
+    margin: 0;
+    color: var(--text-color);
+    font-size: 1.2em;
+    font-weight: 600;
+}
+
+.heatmap-description {
+    margin: 10px 0 15px 0;
+}
+
+.heatmap-description p {
+    color: var(--text-color-secondary);
+    font-size: 0.9em;
+    margin: 0;
+    font-style: italic;
+}
+
+.heatmap-stats {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.heatmap-stats .stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    flex: 1;
+    min-width: 80px;
+}
+
+.stat-icon {
+    font-size: 1.2em;
+}
+
+.stat-value {
+    font-size: 1.2em;
+    font-weight: 700;
+    color: var(--primary-color);
+    font-family: 'Courier New', monospace;
+}
+
+.stat-label {
+    font-size: 0.8em;
+    color: var(--text-color-secondary);
+    font-weight: 500;
+}
+
+.heatmap-container {
+    margin-bottom: 20px;
+}
+
+.heatmap-grid {
+    display: grid;
+    grid-template-columns: 50px repeat(24, 1fr);
+    grid-template-rows: 30px repeat(7, 1fr);
+    gap: 2px;
+    max-width: 100%;
+    overflow: visible;
+}
+
+.heatmap-labels {
+    display: contents;
+}
+
+.day-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8em;
+    color: var(--text-color-secondary);
+    font-weight: 500;
+}
+
+.hour-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7em;
+    color: var(--text-color-secondary);
+    font-weight: 500;
+}
+
+.heatmap-row {
+    display: contents;
+}
+
+.heatmap-cell {
+    width: 20px;
+    height: 20px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+}
+
+.heatmap-cell:hover {
+    border-color: var(--primary-color);
+    z-index: 100;
+}
+
+.heatmap-legend {
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+}
+
+.legend-section {
+    flex: 1;
+    max-width: 400px;
+}
+
+.legend-section h4 {
+    margin: 0 0 8px 0;
+    color: var(--text-color);
+    font-size: 0.85em;
+    font-weight: 600;
+    text-align: center;
+}
+
+.legend-items {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.legend-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.legend-color {
+    width: 30px;
+    height: 20px;
+    border-radius: 5px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.legend-item span {
+    font-size: 0.8em;
+    color: var(--text-color-secondary);
+    text-align: center;
+    min-width: 60px;
+}
+
+.heatmap-tooltip {
+    position: fixed;
+    background: var(--bg-color-light);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    padding: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    z-index: 10000;
+    pointer-events: none;
+    transform: translate(-50%, -100%);
+    margin-top: -10px;
+}
+
+.tooltip-header {
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: 3px;
+}
+
+/* Activity Heatmap Layout - Centered */
+#activity-heatmap {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
 }
 
 .skills-chart-info {

@@ -1,10 +1,16 @@
 import { handleLogin } from "./app/handleAuth.js"
-import { handleProfile } from "./app/handleProfile.js"
+import { renderProfilePage } from "./components/profileComponent.js"
 
 document.addEventListener('DOMContentLoaded', () => {
     const jwt = localStorage.getItem('JWT')
     if (jwt) {
-        handleProfile()
+        // Get user data from localStorage or fetch it
+        const userData = JSON.parse(localStorage.getItem('userData') || '{}')
+        if (userData.id) {
+            renderProfilePage(userData)
+        } else {
+            handleLogin()
+        }
     } else {
         handleLogin()
     }
