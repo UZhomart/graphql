@@ -155,7 +155,10 @@ query GetTeamworkInfoV3($userId: Int!, $groupIds: [Int!]) {
     where: {
       group: {
         id: { _in: $groupIds }
-        members: { userId: { _eq: $userId } }
+        members: { 
+          userId: { _eq: $userId }
+          accepted: { _eq: true }
+        }
       }
       accepted: { _eq: true }
     }
