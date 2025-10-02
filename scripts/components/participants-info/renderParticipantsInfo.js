@@ -24,6 +24,9 @@ export async function renderParticipantsInfo() {
                         <button id="search-participant-btn" class="search-btn">
                             <i class="fas fa-search"></i>
                         </button>
+                        <button id="clear-search-btn" class="clear-btn" title="Clear search">
+                            <i class="fas fa-times"></i>
+                        </button>
                     </div>
                 </div>
                 <div id="participant-results" class="participant-results"></div>
@@ -73,6 +76,11 @@ function setupEventListeners() {
 
     if (searchBtn) {
         searchBtn.addEventListener('click', searchParticipant);
+    }
+    
+    const clearBtn = document.getElementById('clear-search-btn');
+    if (clearBtn) {
+        clearBtn.addEventListener('click', clearSearch);
     }
 }
 
@@ -152,5 +160,23 @@ function searchParticipant() {
         const teamworkContainer = document.getElementById('teamwork-status');
         
         if (teamworkContainer) teamworkContainer.innerHTML = '';
+    }
+}
+
+function clearSearch() {
+    const searchInput = document.getElementById('participant-search');
+    const resultsContainer = document.getElementById('participant-results');
+    const teamworkContainer = document.getElementById('teamwork-status');
+    
+    if (searchInput) {
+        searchInput.value = '';
+    }
+    
+    if (resultsContainer) {
+        resultsContainer.innerHTML = '';
+    }
+    
+    if (teamworkContainer) {
+        teamworkContainer.innerHTML = '';
     }
 }

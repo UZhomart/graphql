@@ -1,5 +1,6 @@
 import { handleLogout } from "../app/handleAuth.js";
 import { renderActivityHeatmap } from "./graphs/activityHeatmap.js";
+import { renderProgressLineChart } from "./graphs/progressLineChart.js";
 import { renderProfileInfo } from "./profile/renderProfileInfo.js";
 import { renderProgramSelector } from "./program-selector/renderProgramSelector.js";
 import { renderGlobalStatistics } from "./global-statistics/renderGlobalStatistics.js";
@@ -27,6 +28,7 @@ export const renderProfilePage = (user) => {
             <div id="program-selector"></div>
             <div id="global-statistics"></div>
             <div id="activity-heatmap"></div>
+            <div id="progress-line-chart"></div>
             <div id="transaction-info"></div>
             <div id="participants-info"></div>
         </div>
@@ -43,6 +45,7 @@ export const renderProfilePage = (user) => {
     const currentUserId = parseInt(localStorage.getItem('currentUserId'));
     if (currentUserId) {
         renderActivityHeatmap(currentUserId);
+        renderProgressLineChart(currentUserId);
     }
     
     renderParticipantsInfo()

@@ -366,6 +366,31 @@ svg {
     animation: pulse 2s infinite;
 }
 
+.chart-scroll-indicator {
+    display: none; /* Hidden on desktop */
+    text-align: center;
+    margin-bottom: 10px;
+    padding: 8px;
+    background: rgba(34, 211, 238, 0.1);
+    border-radius: 8px;
+    border: 1px solid rgba(34, 211, 238, 0.2);
+}
+
+.line-chart-svg-container {
+    width: 100%;
+    max-width: 100%;
+}
+
+.line-chart-svg {
+    width: 100%;
+    height: auto;
+}
+
+.heatmap-container {
+    width: 100%;
+    max-width: 100%;
+}
+
 @keyframes pulse {
     0%, 100% { opacity: 0.7; }
     50% { opacity: 1; }
@@ -544,8 +569,31 @@ svg {
         -webkit-overflow-scrolling: touch;
     }
     
-    .heatmap-scroll-indicator {
-        display: block; /* Show on mobile */
+    .heatmap-scroll-indicator,
+    .chart-scroll-indicator {
+        /* Display controlled by JavaScript based on content overflow */
+    }
+    
+    .heatmap-container {
+        overflow-x: auto;
+        overflow-y: visible;
+        margin-bottom: 15px;
+        -webkit-overflow-scrolling: touch;
+        max-width: 100%;
+        width: 100%;
+    }
+    
+    .line-chart-svg-container {
+        overflow-x: auto;
+        overflow-y: visible;
+        margin-bottom: 15px;
+        -webkit-overflow-scrolling: touch;
+        max-width: 100%;
+        width: 100%;
+    }
+    
+    .line-chart-svg {
+        min-width: 800px; /* Ensure all timeline is visible */
     }
     
     .heatmap-grid {
@@ -591,6 +639,17 @@ svg {
     .legend-color {
         width: 12px;
         height: 12px;
+    }
+}
+
+/* Hide scroll hint on larger screens */
+@media screen and (min-width: 1024px) {
+    .heatmap-scroll-indicator {
+        display: none;
+    }
+    
+    .chart-scroll-indicator {
+        display: none;
     }
 }
 
@@ -1155,5 +1214,22 @@ svg {
     .transaction-xp {
         text-align: left;
         width: 100%;
+    }
+}
+
+/* Charts scroll only */
+@media screen and (max-width: 1024px) {
+    .heatmap-container,
+    .line-chart-svg-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .line-chart-svg {
+        min-width: 800px;
+    }
+    
+    .heatmap-grid {
+        min-width: 600px;
     }
 }
