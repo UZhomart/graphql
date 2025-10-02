@@ -53,6 +53,7 @@ A modern, interactive dashboard for Tomorrow School students to view their learn
 #### 👥 Participants Info
 
 - **Smart Search**: Priority-based search with exact login matching
+- **Clear Search**: Red clear button (X) to reset all search results
 - **Public Data**: Display ID, Login, First Name, and Last Name
 - **Responsive Cards**: Modern card layout with hover effects and exact match highlighting
 - **Real-time Search**: Instant filtering as you type
@@ -70,10 +71,20 @@ A modern, interactive dashboard for Tomorrow School students to view their learn
 #### 📊 Data Visualizations
 
 - **Activity Heatmap**: Visual representation of learning activity patterns across days and hours
-- **Interactive Tooltips**: Hover to see detailed transaction counts
-- **Kazakhstan Week Format**: Monday-first week display
-- **Peak Time Analysis**: Shows most active day and hour
-- **Responsive Design**: Optimized for all screen sizes
+  - **Interactive Tooltips**: Hover to see detailed transaction counts
+  - **Kazakhstan Week Format**: Monday-first week display
+  - **Peak Time Analysis**: Shows most active day and hour
+  - **Responsive Design**: Optimized for all screen sizes
+  - **Mobile Scroll Hint**: "← Scroll horizontally to see all hours →" on mobile devices
+
+- **Progress Line Chart**: XP accumulation visualization over time
+  - **Interactive Data Points**: Click on any point to see detailed daily information
+  - **Cumulative XP Tracking**: Shows total XP earned up to each day
+  - **Daily Activity Details**: Displays individual transactions and project names
+  - **Clean Project Names**: Removes redundant prefixes like "project", "exercise", "piscine"
+  - **Responsive Design**: Adapts to different screen sizes with proper centering
+  - **Mobile Scroll Hint**: "← Scroll horizontally to see timeline →" on mobile devices
+  - **Smooth Animations**: Hover effects and interactive elements
 
 ### 🎨 Modern UI/UX
 
@@ -96,7 +107,7 @@ A modern, interactive dashboard for Tomorrow School students to view their learn
 - Comprehensive profile information with expandable details
 - Program selector with dynamic statistics
 - Global statistics cards with interactive popups
-- Smart participants search with exact match priority
+- Smart participants search with exact match priority and clear functionality
 - Advanced teamwork analytics with team/solo project separation
 - Beautiful data visualizations
 
@@ -146,7 +157,8 @@ graphql-master/
 │   │   │   ├── renderSuccessfulProjects.js # Successful projects card component
 │   │   │   └── successfulProjectsPopup.js # Modal showing successful projects list
 │   │   ├── 📁 graphs/
-│   │   │   └── activityHeatmap.js      # D3.js-based activity heatmap visualization
+│   │   │   ├── activityHeatmap.js      # D3.js-based activity heatmap visualization
+│   │   │   └── progressLineChart.js   # Interactive XP progress line chart with detailed popups
 │   │   ├── 📁 profile/
 │   │   │   └── renderProfileInfo.js # Profile information with expandable details
 │   │   ├── 📁 program-selector/
@@ -170,6 +182,7 @@ graphql-master/
 │   ├── login.css                  # Login page styles with glassmorphism and animations
 │   ├── participants-info.css      # Participants info section with search and card layouts
 │   ├── profile.css                # Dashboard styles with gradients and modern UI
+│   ├── progress-chart.css         # Progress line chart styles with responsive design
 │   └── program-selector.css       # Program selector styles with interactive cards
 ├── index.html                     # Single page application entry point
 └── README.md                      # Comprehensive project documentation
@@ -209,7 +222,7 @@ graphql-master/
 
 #### 👥 Participants & Teamwork
 
-- **`renderParticipantsInfo.js`**: Smart participants search with exact match priority and responsive cards
+- **`renderParticipantsInfo.js`**: Smart participants search with exact match priority, clear search functionality, and responsive cards
 - **`teamworkStatus.js`**: Comprehensive teamwork analytics with team/solo project separation, collaboration details, and smart filtering for accepted participants only
 - **`soloProjectsPopup.js`**: Interactive popup modal displaying detailed list of individual projects
 

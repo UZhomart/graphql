@@ -12,7 +12,7 @@ export async function renderTeamworkStatus(userId) {
 
     container.innerHTML = `
         <div class="teamwork-section">
-            <h3 class="teamwork-title">🤝 Teamwork Status (Core education)</h3>
+            <h3 class="teamwork-title">🤝 Teamwork Status (Core education) (finished can be also unsuccessful)</h3>
             <div class="teamwork-container">
                 <div class="teamwork-loading" id="teamwork-loading">
                     <div class="loading-spinner"></div>

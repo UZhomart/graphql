@@ -60,7 +60,7 @@ export async function renderActivityHeatmap(userId) {
                     </div>
                 </div>
                 <div class="heatmap-container">
-                    <div class="heatmap-scroll-indicator">
+                    <div class="heatmap-scroll-indicator" style="display: none;">
                         <span class="scroll-hint">← Scroll horizontally to see all hours →</span>
                     </div>
                     <div class="heatmap-grid">
@@ -253,3 +253,28 @@ function getMostActiveDay(heatmapData) {
     
     return dayNames[mostActiveDay];
 }
+
+function checkScrollNeeded() {
+    const gridContainer = document.querySelector('.heatmap-container');
+    const grid = document.querySelector('.heatmap-grid');
+    const indicator = document.querySelector('.heatmap-scroll-indicator');
+    
+    if (!gridContainer || !grid || !indicator) return;
+    
+    // Check if grid is wider than its container
+    const gridContainerWidth = gridContainer.offsetWidth;
+    const gridWidth = grid.scrollWidth;
+    
+    // On mobile, always show scroll hint if grid is wider than container
+    const isMobile = window.innerWidth <= 1024;
+    
+    if (gridWidth > gridContainerWidth || (isMobile && gridWidth > gridContainerWidth)) {
+        indicator.style.display = 'block';
+    } else {
+        indicator.style.display = 'none';
+    }
+}
+
+// Check scroll on load and resize
+setTimeout(checkScrollNeeded, 100);
+window.addEventListener('resize', checkScrollNeeded);

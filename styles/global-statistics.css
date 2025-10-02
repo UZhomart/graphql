@@ -29,8 +29,8 @@
 }
 
 .global-stats-container {
-    display: flex;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 20px;
     padding: 20px;
 }
@@ -47,6 +47,8 @@
     border: 1px solid rgba(255, 255, 255, 0.1);
     min-width: 200px;
     position: relative;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 .global-stat-card::after {
@@ -98,6 +100,9 @@
     font-weight: 500;
     z-index: 2;
     position: relative;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
 }
 
 .global-stat-subtitle {
@@ -227,11 +232,6 @@
 }
 
 @media screen and (max-width: 564px) {
-    .global-stats-container {
-        flex-direction: column;
-        gap: 15px;
-    }
-    
     .global-stat-card {
         min-width: auto;
         padding: 15px;
@@ -621,11 +621,6 @@
 }
 
 @media screen and (max-width: 564px) {
-    .global-stats-container {
-        flex-direction: column;
-        gap: 15px;
-    }
-    
     .global-stat-card,
     .audit-card,
     .project-card {

@@ -115,6 +115,30 @@
     transform: scale(0.95);
 }
 
+.clear-btn {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-left: 5px;
+}
+
+.clear-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+}
+
+.clear-btn:active {
+    transform: scale(0.95);
+}
+
 /* Results Container */
 .participant-results {
     min-height: 100px;
