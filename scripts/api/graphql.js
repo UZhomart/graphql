@@ -66,15 +66,35 @@ query ViaUsers {
 }`
 
 export const GET_FINISHED_PROJECT_GROUPS = /*gql*/`
-query MyFinishedProjectGroupIds {
+query MyFinishedProjectGroupIds($userId: Int!) {
   group(
     where: {
       object: { type: { _eq: "project" } }
       status: { _eq: finished }
+      members: { 
+        userId: { _eq: $userId }
+        accepted: { _eq: true }
+      }
     }
-    order_by: { updatedAt: desc }
   ) {
     id
+    status
+    object {
+      name
+      type
+    }
+  }
+}`
+
+export const GET_AUDITS_FOR_GROUPS = /*gql*/`
+query GetAuditsForGroups($groupIds: [Int!]) {
+  audit(
+    where: {
+      groupId: { _in: $groupIds }
+    }
+  ) {
+    groupId
+    closureType
   }
 }`
 
