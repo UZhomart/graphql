@@ -1,5 +1,5 @@
 import { fetchGraphQL } from '../../api/graphqlRequests.js';
-import { GET_TEAMWORK_INFO_V3, GET_FINISHED_PROJECT_GROUPS } from '../../api/graphql.js';
+import { GET_TEAMWORK_INFO_V3, GET_FINISHED_PROJECT_GROUPS, GET_AUDITS_FOR_GROUPS } from '../../api/graphql.js';
 
 let teamworkData = {};
 
@@ -12,7 +12,7 @@ export async function renderTeamworkStatus(userId) {
 
     container.innerHTML = `
         <div class="teamwork-section">
-            <h3 class="teamwork-title">🤝 Teamwork Status (Core education) (finished can be also unsuccessful)</h3>
+            <h3 class="teamwork-title">🤝 Teamwork Status (Core education) (only succeeded projects)</h3>
             <div class="teamwork-container">
                 <div class="teamwork-loading" id="teamwork-loading">
                     <div class="loading-spinner"></div>
@@ -45,19 +45,30 @@ async function loadTeamworkData(userId) {
 
         console.log('Loading teamwork data for userId:', userId);
         
-        // First, get all finished project groups
-        console.log('Step 1: Getting finished project groups...');
-        const groupsResponse = await fetchGraphQL(GET_FINISHED_PROJECT_GROUPS, {}, token);
+        // First, get all finished project groups for this user
+        console.log('Step 1: Getting finished project groups for userId:', userId);
+        const groupsResponse = await fetchGraphQL(GET_FINISHED_PROJECT_GROUPS, { userId }, token);
         console.log('Finished groups response:', groupsResponse);
+        
+        if (groupsResponse && groupsResponse.errors) {
+            console.error('GraphQL errors:', groupsResponse.errors);
+            console.error('Detailed error:', JSON.stringify(groupsResponse.errors, null, 2));
+        }
         
         if (!groupsResponse || !groupsResponse.data || !groupsResponse.data.group) {
             throw new Error('No finished project groups found');
         }
         
-        const groupIds = groupsResponse.data.group.map(g => g.id);
-        console.log('Found finished group IDs:', groupIds);
+        const allFinishedGroupIds = groupsResponse.data.group.map(g => g.id);
+        console.log('All finished group IDs:', allFinishedGroupIds);
+        console.log('Sample finished groups:', groupsResponse.data.group.slice(0, 3));
         
-        if (groupIds.length === 0) {
+        console.log('\n=== Project details for each of 14 projects ===');
+        groupsResponse.data.group.forEach(group => {
+            console.log(`Group ${group.id} (${group.object.name}): status=${group.status}, type=${group.object.type}`);
+        });
+        
+        if (allFinishedGroupIds.length === 0) {
             console.log('No finished projects found');
             teamworkData = [];
             displayTeamworkData();
@@ -66,9 +77,60 @@ async function loadTeamworkData(userId) {
             return;
         }
         
-        // Then, get teamwork data for these groups
-        console.log('Step 2: Getting teamwork data for groups...');
-        const response = await fetchGraphQL(GET_TEAMWORK_INFO_V3, { userId, groupIds }, token);
+        // Second, get ALL audits for these groups
+        console.log('Step 2: Getting ALL audits for groups...');
+        const auditsResponse = await fetchGraphQL(GET_AUDITS_FOR_GROUPS, { groupIds: allFinishedGroupIds }, token);
+        console.log('Succeeded audits response:', auditsResponse);
+        
+        if (auditsResponse && auditsResponse.errors) {
+            console.error('GraphQL errors for audits:', auditsResponse.errors);
+        }
+        
+        // Log audit analysis
+        if (auditsResponse && auditsResponse.data && auditsResponse.data.audit) {
+            console.log('Total audits found:', auditsResponse.data.audit.length);
+            console.log('All audits:', auditsResponse.data.audit);
+            
+            const closureTypeCounts = {};
+            const auditsByGroup = {};
+            
+            auditsResponse.data.audit.forEach(audit => {
+                closureTypeCounts[audit.closureType] = (closureTypeCounts[audit.closureType] || 0) + 1;
+                if (!auditsByGroup[audit.groupId]) {
+                    auditsByGroup[audit.groupId] = [];
+                }
+                auditsByGroup[audit.groupId].push(audit.closureType);
+            });
+            
+            console.log('Closure type distribution:', closureTypeCounts);
+            console.log('\n=== Audit status for each of 14 projects ===');
+            
+            allFinishedGroupIds.forEach(groupId => {
+                const audits = auditsByGroup[groupId] || [];
+                console.log(`Group ${groupId}: ${audits.length > 0 ? audits.join(', ') : 'NO AUDITS'}`);
+            });
+        }
+        
+        // Start with all finished groups
+        let succeededGroupIds = [...allFinishedGroupIds];
+        
+        // Remove groups that have failed audits
+        if (auditsResponse && auditsResponse.data && auditsResponse.data.audit) {
+            const failedGroupIds = new Set(
+                auditsResponse.data.audit
+                    .filter(audit => audit.closureType === 'failed' || audit.closureType === 'autoFailed')
+                    .map(audit => audit.groupId)
+            );
+            
+            console.log('Failed group IDs to exclude:', [...failedGroupIds]);
+            succeededGroupIds = succeededGroupIds.filter(groupId => !failedGroupIds.has(groupId));
+        }
+        
+        console.log('Final group IDs to process (all finished except failed):', succeededGroupIds.length);
+        
+        // Fourth, get teamwork data for these groups
+        console.log('Step 3: Getting teamwork data for groups...');
+        const response = await fetchGraphQL(GET_TEAMWORK_INFO_V3, { userId, groupIds: succeededGroupIds }, token);
         console.log('Teamwork response:', response);
         
         if (response && response.data && response.data.group_user) {

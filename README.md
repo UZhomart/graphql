@@ -61,11 +61,13 @@ A modern, interactive dashboard for Tomorrow School students to view their learn
 
 #### 🤝 Teamwork Analytics
 
+- **Smart Project Filtering**: Shows all finished projects except those with failed audits
 - **Unique Teammates**: Count of different people worked together with
 - **Team Projects**: Number of unique collaborative projects (excluding solo work)
 - **Solo Projects**: Individual projects completed with detailed popup list
 - **Collaboration Details**: Complete list of teammates and shared projects
-- **Smart Filtering**: Automatic separation of team vs solo projects
+- **Advanced Audit Logic**: Includes projects with succeeded, unused, expired audits or no audits
+- **Failed Project Exclusion**: Automatically excludes projects with failed/autoFailed audits
 - **Interactive Statistics**: Clickable cards with detailed information popups
 
 #### 📊 Data Visualizations
@@ -193,7 +195,7 @@ graphql-master/
 #### 🔐 Authentication & API
 
 - **`authRequests.js`**: Handles JWT authentication with Tomorrow School API, includes safe encoding for non-Latin characters
-- **`graphql.js`**: Contains all GraphQL queries for user data, transactions, audits, project progress, participants info, and teamwork analytics with smart filtering (accepted participants only)
+- **`graphql.js`**: Contains all GraphQL queries for user data, transactions, audits, project progress, participants info, and teamwork analytics with smart filtering (accepted participants only) and advanced audit logic (excludes failed projects)
 - **`graphqlRequests.js`**: Manages GraphQL requests with proper error handling and JWT token management
 
 #### 🎨 UI Components
@@ -223,7 +225,7 @@ graphql-master/
 #### 👥 Participants & Teamwork
 
 - **`renderParticipantsInfo.js`**: Smart participants search with exact match priority, clear search functionality, and responsive cards
-- **`teamworkStatus.js`**: Comprehensive teamwork analytics with team/solo project separation, collaboration details, and smart filtering for accepted participants only
+- **`teamworkStatus.js`**: Comprehensive teamwork analytics with team/solo project separation, collaboration details, smart filtering for accepted participants only, and advanced audit logic that shows all finished projects except those with failed audits
 - **`soloProjectsPopup.js`**: Interactive popup modal displaying detailed list of individual projects
 
 #### 🛠 Utilities
@@ -262,26 +264,55 @@ graphql-master/
 
 2. **Start a local server**
 
-   **Option 1: Using Python**
+   **Option 1: Using Python (Recommended)**
 
    ```bash
-   # Python 3
+   # macOS/Linux
+   python3 -m http.server 8000
+
+   # Windows
    python -m http.server 8000
 
-   # Python 2
-   python -m SimpleHTTPServer 8000
+   # If python3 not found on macOS, install: brew install python3
    ```
 
    **Option 2: Using Node.js**
 
    ```bash
+   # Install serve globally (one time)
+   npm install -g serve
+
+   # Start server
    npx serve .
+   # or
+   serve .
    ```
 
    **Option 3: Using PHP**
 
    ```bash
+   # macOS/Linux
    php -S localhost:8000
+
+   # Windows
+   php -S localhost:8000
+   ```
+
+   **Option 4: Using VS Code Live Server Extension**
+
+   1. Install "Live Server" extension in VS Code
+   2. Right-click on `index.html`
+   3. Select "Open with Live Server"
+   4. Automatically opens in browser with auto-reload
+
+   **Option 5: Using Python Simple Server**
+
+   ```bash
+   # macOS/Linux (Python 2)
+   python -m SimpleHTTPServer 8000
+
+   # Windows (Python 2)
+   python -m SimpleHTTPServer 8000
    ```
 
 3. **Open in browser**
@@ -289,6 +320,13 @@ graphql-master/
    ```bash
    http://localhost:8000
    ```
+
+4. **Troubleshooting**
+
+   - **"python: command not found"** (macOS): Use `python3` instead of `python`
+   - **Permission denied**: Try port 3000 or 8080 instead
+   - **CORS errors**: Use a proper HTTP server (not file:// protocol)
+   - **Port already in use**: Change port number (e.g., 8001, 3000)
 
 ### Production Deployment
 
@@ -329,8 +367,11 @@ Click the "Logout" button in the top-right corner to securely end your session.
 
 ### 🤝 Advanced Teamwork Analytics
 
+- **Smart Project Filtering**: Shows all finished projects except those with failed audits
 - **Team vs Solo Separation**: Automatic filtering of collaborative vs individual projects
 - **Accepted Participants Only**: Smart filtering to show only confirmed team members (excludes invited but not accepted)
+- **Advanced Audit Logic**: Includes projects with succeeded, unused, expired audits or no audits at all
+- **Failed Project Exclusion**: Automatically excludes projects with failed/autoFailed audit status
 - **Collaboration Statistics**: Unique teammates count and team project totals
 - **Detailed Project Lists**: Complete breakdown of shared projects with each teammate
 - **Interactive Popups**: Clickable statistics with detailed information modals
