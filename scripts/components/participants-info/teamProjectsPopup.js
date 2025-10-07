@@ -1,6 +1,6 @@
-export function showSoloProjectsPopup() {
-    if (!window.soloProjectsData || window.soloProjectsData.length === 0) {
-        alert('No solo projects found');
+export function showTeamProjectsPopup() {
+    if (!window.teamProjectsData || window.teamProjectsData.length === 0) {
+        alert('No team projects found');
         return;
     }
 
@@ -11,24 +11,24 @@ export function showSoloProjectsPopup() {
         <div class="program-popup">
             <div class="program-popup-header">
                 <h3>
-                    <span>👤</span>
-                    Solo Projects
+                    <span>📁</span>
+                    Team Projects
                 </h3>
-                <button class="close-btn" id="close-solo-popup">
+                <button class="close-btn" id="close-team-projects-popup">
                     <i class="fa-solid fa-times"></i>
                 </button>
             </div>
             <div class="program-popup-content">
                 <div class="xp-summary">
                     <div class="summary-item">
-                        <span class="summary-label">Total Solo Projects:</span>
-                        <span class="summary-value">${window.soloProjectsData.length}</span>
+                        <span class="summary-label">Total Team Projects:</span>
+                        <span class="summary-value">${window.teamProjectsData.length}</span>
                     </div>
                 </div>
                 <div class="xp-transactions">
-                    <h4>Solo Projects</h4>
+                    <h4>Team Projects</h4>
                     <div class="transactions-list">
-                        ${window.soloProjectsData.map(project => /*html*/`
+                        ${window.teamProjectsData.map(project => /*html*/`
                             <div class="transaction-item">
                                 <div class="transaction-info">
                                     <div class="transaction-name">${project.name}</div>
@@ -44,7 +44,7 @@ export function showSoloProjectsPopup() {
     document.body.appendChild(overlay);
 
     // Add close functionality
-    const closeBtn = document.getElementById('close-solo-popup');
+    const closeBtn = document.getElementById('close-team-projects-popup');
     const closePopup = () => {
         document.body.removeChild(overlay);
     };
@@ -68,7 +68,7 @@ export function showSoloProjectsPopup() {
     document.addEventListener('keydown', handleEscape);
 }
 
-export function closeSoloProjectsPopup() {
+export function closeTeamProjectsPopup() {
     const overlay = document.querySelector('.popup-overlay');
     if (overlay) {
         document.body.removeChild(overlay);
@@ -76,5 +76,5 @@ export function closeSoloProjectsPopup() {
 }
 
 // Make functions globally available
-window.showSoloProjectsPopup = showSoloProjectsPopup;
-window.closeSoloProjectsPopup = closeSoloProjectsPopup;
+window.showTeamProjectsPopup = showTeamProjectsPopup;
+window.closeTeamProjectsPopup = closeTeamProjectsPopup;

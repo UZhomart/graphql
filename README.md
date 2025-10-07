@@ -184,7 +184,6 @@ graphql-master/
 │   ├── login.css                  # Login page styles with glassmorphism and animations
 │   ├── participants-info.css      # Participants info section with search and card layouts
 │   ├── profile.css                # Dashboard styles with gradients and modern UI
-│   ├── progress-chart.css         # Progress line chart styles with responsive design
 │   └── program-selector.css       # Program selector styles with interactive cards
 ├── index.html                     # Single page application entry point
 └── README.md                      # Comprehensive project documentation

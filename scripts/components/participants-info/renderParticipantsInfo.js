@@ -2,6 +2,8 @@ import { fetchGraphQL } from '../../api/graphqlRequests.js';
 import { GET_PARTICIPANTS_INFO } from '../../api/graphql.js';
 import { renderTeamworkStatus } from './teamworkStatus.js';
 import './soloProjectsPopup.js';
+import './uniqueTeammatesPopup.js';
+import './teamProjectsPopup.js';
 
 let participantsData = [];
 

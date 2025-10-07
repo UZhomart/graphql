@@ -1,5 +1,7 @@
 import { fetchGraphQL } from '../../api/graphqlRequests.js';
 import { GET_TEAMWORK_INFO_V3, GET_FINISHED_PROJECT_GROUPS, GET_AUDITS_FOR_GROUPS } from '../../api/graphql.js';
+import './uniqueTeammatesPopup.js';
+import './teamProjectsPopup.js';
 
 let teamworkData = {};
 
@@ -256,6 +258,28 @@ function displayTeamworkData() {
     
     // Store in global scope for popup access
     window.soloProjectsData = soloProjectsData;
+    window.uniqueTeammatesData = teammates;
+    
+    // Store team projects data for popup
+    const teamProjectsData = Array.from(teamProjectNames).map(projectName => {
+        const projectData = teamworkData.find(item => 
+            item.group.object.name === projectName && 
+            groupMemberCounts[item.group.id].size > 1
+        );
+        return {
+            name: projectName,
+            status: projectData?.group.status || 'unknown',
+            updatedAt: projectData?.group.updatedAt || null,
+            type: projectData?.group.object.type || 'Core'
+        };
+    }).sort((a, b) => {
+        // Sort by updatedAt descending (newest first)
+        if (a.updatedAt && b.updatedAt) {
+            return new Date(b.updatedAt) - new Date(a.updatedAt);
+        }
+        return 0;
+    });
+    window.teamProjectsData = teamProjectsData;
 
     // Sort teammates by number of projects (descending)
     teammates.sort((a, b) => b.projects.length - a.projects.length);
@@ -263,7 +287,7 @@ function displayTeamworkData() {
     // Summary
     summaryEl.innerHTML = `
         <div class="teamwork-stats">
-            <div class="stat-item">
+            <div class="stat-item" onclick="showUniqueTeammatesPopup()">
                 <div class="stat-icon">👥</div>
                 <div class="stat-info">
                     <div class="stat-number">${uniqueTeammates}</div>
@@ -271,7 +295,7 @@ function displayTeamworkData() {
                     <div class="stat-description">Different people worked together</div>
                 </div>
             </div>
-            <div class="stat-item">
+            <div class="stat-item" onclick="showTeamProjectsPopup()">
                 <div class="stat-icon">📁</div>
                 <div class="stat-info">
                     <div class="stat-number">${uniqueProjects}</div>
@@ -312,7 +336,6 @@ function displayTeamworkData() {
                         ${teammate.projects.map(project => `
                             <div class="project-item">
                                 <div class="project-name">${project.object.name}</div>
-                                <div class="project-status ${project.status}">${project.status}</div>
                             </div>
                         `).join('')}
                     </div>

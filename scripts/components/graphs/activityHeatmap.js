@@ -258,20 +258,29 @@ function checkScrollNeeded() {
     const gridContainer = document.querySelector('.heatmap-container');
     const grid = document.querySelector('.heatmap-grid');
     const indicator = document.querySelector('.heatmap-scroll-indicator');
-    
+
     if (!gridContainer || !grid || !indicator) return;
-    
+
     // Check if grid is wider than its container
     const gridContainerWidth = gridContainer.offsetWidth;
     const gridWidth = grid.scrollWidth;
-    
-    // On mobile, always show scroll hint if grid is wider than container
-    const isMobile = window.innerWidth <= 1024;
-    
-    if (gridWidth > gridContainerWidth || (isMobile && gridWidth > gridContainerWidth)) {
+
+    // Show scroll hint if grid is wider than container
+    if (gridWidth > gridContainerWidth) {
         indicator.style.display = 'block';
+        // Make grid responsive by reducing cell sizes on small screens
+        if (gridContainerWidth < 600) {
+            grid.style.transform = 'scale(0.8)';
+            grid.style.transformOrigin = 'top left';
+            grid.style.width = (grid.scrollWidth * 0.8) + 'px';
+        } else {
+            grid.style.transform = 'none';
+            grid.style.width = 'auto';
+        }
     } else {
         indicator.style.display = 'none';
+        grid.style.transform = 'none';
+        grid.style.width = 'auto';
     }
 }
 

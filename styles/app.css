@@ -26,6 +26,14 @@ body {
     transition: var( --transition);
 }
 
+.main-container {
+    width: 100%;
+    max-width: 100%;
+    min-height: 100vh;
+    box-sizing: border-box;
+    overflow-x: hidden;
+}
+
 .btn {
     background-color: var(--primary-color);
     outline: none;
@@ -85,4 +93,54 @@ body {
     display: inline-block;
     width: 100%;
     text-align: center;
+}
+
+/* Responsive Design for App */
+@media screen and (max-width: 768px) {
+    .main-container {
+        padding: 0 10px;
+    }
+    
+    .btn {
+        padding: 8px 16px;
+        font-size: medium;
+    }
+    
+    #no-script>div {
+        width: 80%;
+        padding: 20px;
+    }
+    
+    #no-script>div h1 {
+        font-size: 20px;
+    }
+    
+    #no-script>div p {
+        font-size: 14px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .main-container {
+        padding: 0 5px;
+    }
+    
+    .btn {
+        padding: 6px 12px;
+        font-size: small;
+    }
+    
+    #no-script>div {
+        width: 90%;
+        padding: 15px;
+        margin: 10px;
+    }
+    
+    #no-script>div h1 {
+        font-size: 18px;
+    }
+    
+    #no-script>div p {
+        font-size: 13px;
+    }
 }
