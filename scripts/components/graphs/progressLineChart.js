@@ -30,7 +30,7 @@ export async function renderProgressLineChart(userId) {
         const container = document.getElementById('progress-line-chart');
         if (!container) return;
 
-        // Process data for line chart
+        // Process data
         const chartData = processProgressData(transactions);
         const totalXP = transactions.reduce((sum, t) => sum + (t.amount || 0), 0);
 
@@ -39,7 +39,7 @@ export async function renderProgressLineChart(userId) {
                 <div class="chart-header">
                     <h3>📈 Progress Line Chart</h3>
                     <div class="chart-description">
-                        <p><strong>What this shows:</strong> Chart displays XP accumulation over time. Each point = one day of activity. Click on a point for details.</p>
+                        <p><strong>What this shows:</strong> XP accumulation over time. Click points for details.</p>
                     </div>
                     <div class="chart-stats">
                         <div class="stat-item">
@@ -60,8 +60,8 @@ export async function renderProgressLineChart(userId) {
                     </div>
                 </div>
                 <div class="chart-container">
-                    <div class="chart-scroll-indicator" style="display: none;">
-                        <span class="scroll-hint">← Scroll horizontally to see timeline →</span>
+                    <div class="chart-scroll-indicator">
+                        <span class="scroll-hint">← Scroll timeline →</span>
                     </div>
                     <div class="line-chart-svg-container">
                         ${renderLineChartSVG(chartData)}
@@ -70,19 +70,23 @@ export async function renderProgressLineChart(userId) {
             </div>
         `;
 
-        // Add interactive functionality
+        // Interactivity
         addChartInteractivity(container, chartData);
-        
-        // Handle window resize
-        const handleResize = () => {
-            const chartContainer = document.getElementById('progress-line-chart');
-            if (chartContainer) {
-                chartContainer.innerHTML = renderLineChartSVG(chartData);
-                addChartInteractivity(container, chartData);
-            }
-        };
-        
-        window.addEventListener('resize', handleResize);
+        checkProgressScrollNeeded();
+
+        // Resize handler
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                const svgContainer = container.querySelector('.line-chart-svg-container');
+                if (svgContainer) {
+                    svgContainer.innerHTML = renderLineChartSVG(chartData);
+                    addChartInteractivity(container, chartData);
+                    checkProgressScrollNeeded();
+                }
+            }, 200);
+        });
 
     } catch (error) {
         console.error('Error rendering progress line chart:', error);
@@ -90,12 +94,10 @@ export async function renderProgressLineChart(userId) {
 }
 
 function processProgressData(transactions) {
-    // Sort transactions by date
     const sortedTransactions = transactions.sort((a, b) => 
         new Date(a.createdAt) - new Date(b.createdAt)
     );
 
-    // Group by date and calculate cumulative XP
     const dailyData = {};
     let cumulativeXP = 0;
 
@@ -116,7 +118,6 @@ function processProgressData(transactions) {
         dailyData[dateKey].transactions.push(transaction);
     });
 
-    // Calculate cumulative XP
     const sortedDates = Object.keys(dailyData).sort();
     sortedDates.forEach(dateKey => {
         cumulativeXP += dailyData[dateKey].xp;
@@ -127,128 +128,116 @@ function processProgressData(transactions) {
 }
 
 function renderLineChartSVG(data) {
-    if (!data || data.length === 0) return '<div class="no-data">No data to display</div>';
+    if (!data || data.length === 0) return '<div class="no-data">No data</div>';
 
-    // Get container width or use minimum width
-    const container = document.getElementById('progress-line-chart');
-    const containerWidth = container ? container.offsetWidth - 40 : 800; // 40px for padding
-    const width = Math.max(800, Math.min(containerWidth, data.length * 20));
-    const height = 300;
-    const padding = { top: 20, right: 40, bottom: 60, left: 80 };
+    // Dynamic width
+    const dataLength = data.length;
+    const minWidthPerPoint = 25;
+    const baseWidth = dataLength * minWidthPerPoint;
+    const containerWidth = 800;
+
+    let width = Math.max(baseWidth, containerWidth);
+
+    // Compact height
+    let ratio;
+    if (window.innerWidth <= 480) ratio = 6;
+    else if (window.innerWidth <= 768) ratio = 5;
+    else ratio = 4;
+    let height = Math.max(width / ratio, 150);
+    height = Math.min(height, 300);
+
+    const padding = { top: 20, right: 30, bottom: 50, left: 60 };
     const chartWidth = width - padding.left - padding.right;
     const chartHeight = height - padding.top - padding.bottom;
 
-    // Calculate scales
+    // Scales
     const maxXP = Math.max(...data.map(d => d.cumulativeXP));
     const minXP = Math.min(...data.map(d => d.cumulativeXP));
-    const xScale = chartWidth / (data.length - 1);
-    const yScale = chartHeight / (maxXP - minXP);
+    const xScale = chartWidth / (data.length - 1 || 1);
+    const yScale = chartHeight / (Math.max(maxXP - minXP, 1));
 
-    // Generate path for line
+    // Path
     const pathData = data.map((point, index) => {
         const x = padding.left + (index * xScale);
         const y = padding.top + chartHeight - ((point.cumulativeXP - minXP) * yScale);
         return `${index === 0 ? 'M' : 'L'} ${x} ${y}`;
     }).join(' ');
 
-    // Generate points
+    // Points
     const points = data.map((point, index) => {
         const x = padding.left + (index * xScale);
         const y = padding.top + chartHeight - ((point.cumulativeXP - minXP) * yScale);
         return { x, y, data: point };
     });
 
-    // Generate Y-axis labels
+    // Y Labels
     const yLabels = [];
-    const labelCount = 6;
+    const labelCount = 4;
     for (let i = 0; i <= labelCount; i++) {
         const value = minXP + (maxXP - minXP) * (i / labelCount);
         const y = padding.top + chartHeight - ((value - minXP) * yScale);
         yLabels.push({ value: Math.round(value), y });
     }
 
-    // Generate X-axis labels (every 7th day or so)
+    // X Labels
     const xLabels = [];
-    const labelInterval = Math.max(1, Math.floor(data.length / 8));
+    let maxLabels = window.innerWidth < 480 ? 3 : window.innerWidth < 768 ? 4 : 6;
+    const labelInterval = Math.max(1, Math.floor(data.length / maxLabels));
     for (let i = 0; i < data.length; i += labelInterval) {
         const x = padding.left + (i * xScale);
         const date = new Date(data[i].date);
-        xLabels.push({ 
-            value: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }), 
-            x 
+        xLabels.push({
+            value: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+            x
         });
     }
 
-    return `
-        <svg width="${width}" height="${height}" class="line-chart-svg">
-            <!-- Grid lines -->
-            <defs>
-                <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
-                    <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
-                </pattern>
-            </defs>
-            <rect width="${width}" height="${height}" fill="url(#grid)" />
-            
-            <!-- Y-axis -->
-            <line x1="${padding.left}" y1="${padding.top}" 
-                  x2="${padding.left}" y2="${padding.top + chartHeight}" 
-                  stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
-            
-            <!-- X-axis -->
-            <line x1="${padding.left}" y1="${padding.top + chartHeight}" 
-                  x2="${padding.left + chartWidth}" y2="${padding.top + chartHeight}" 
-                  stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
-            
-            <!-- Y-axis labels -->
-            ${yLabels.map(label => `
-                <text x="${padding.left - 10}" y="${label.y + 5}" 
-                      text-anchor="end" class="axis-label">
-                    ${label.value.toLocaleString()}
-                </text>
-            `).join('')}
-            
-            <!-- X-axis labels -->
-            ${xLabels.map(label => `
-                <text x="${label.x}" y="${padding.top + chartHeight + 20}" 
-                      text-anchor="middle" class="axis-label">
-                    ${label.value}
-                </text>
-            `).join('')}
-            
-            <!-- Line path -->
-            <path d="${pathData}" 
-                  fill="none" 
-                  stroke="var(--primary-color)" 
-                  stroke-width="3" 
-                  class="progress-line"
-                  stroke-linecap="round" 
-                  stroke-linejoin="round"/>
-            
-            <!-- Data points -->
-            ${points.map((point, index) => `
-                <circle cx="${point.x}" cy="${point.y}" r="4" 
-                        fill="var(--primary-color)" 
-                        stroke="white" 
-                        stroke-width="2"
-                        class="data-point"
-                        data-index="${index}"
-                        data-date="${point.data.date}"
-                        data-xp="${point.data.cumulativeXP}"
-                        data-transactions="${point.data.transactions.length}"/>
-            `).join('')}
-            
-            <!-- Gradient for area under curve -->
-            <defs>
-                <linearGradient id="areaGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                    <stop offset="0%" style="stop-color:var(--primary-color);stop-opacity:0.3" />
-                    <stop offset="100%" style="stop-color:var(--primary-color);stop-opacity:0.05" />
-                </linearGradient>
-            </defs>
-            <path d="${pathData} L ${padding.left + chartWidth} ${padding.top + chartHeight} L ${padding.left} ${padding.top + chartHeight} Z" 
-                  fill="url(#areaGradient)" 
-                  class="area-fill"/>
-        </svg>
-    `;
+    // Build SVG
+    let svg = `<svg width="${width}" height="${height}" class="line-chart-svg" viewBox="0 0 ${width} ${height}">`;
+    
+    // Grid
+    svg += '<g class="grid">';
+    for (let i = 0; i <= 5; i++) {
+        const gy = padding.top + (chartHeight * i / 5);
+        svg += `<line x1="${padding.left}" y1="${gy}" x2="${width - padding.right}" y2="${gy}" stroke="rgba(255,255,255,0.1)" />`;
+    }
+    for (let i = 0; i < data.length; i += Math.floor(data.length / 5)) {
+        const gx = padding.left + (i * xScale);
+        svg += `<line x1="${gx}" y1="${padding.top}" x2="${gx}" y2="${height - padding.bottom}" stroke="rgba(255,255,255,0.1)" />`;
+    }
+    svg += '</g>';
+
+    // Area
+    svg += `<path class="area-fill" d="${pathData} V ${padding.top + chartHeight} H ${padding.left} Z" />`;
+
+    // Line
+    svg += `<path class="progress-line" d="${pathData}" />`;
+
+    // Points
+    points.forEach(point => {
+        svg += `<circle class="data-point" cx="${point.x}" cy="${point.y}" data-index="${points.indexOf(point)}" />`;
+    });
+
+    // Y Axis
+    svg += `<line x1="${padding.left}" y1="${padding.top}" x2="${padding.left}" y2="${height - padding.bottom}" stroke="var(--border-color)" />`;
+    yLabels.forEach(label => {
+        svg += `
+            <line x1="${padding.left - 5}" y1="${label.y}" x2="${padding.left}" y2="${label.y}" stroke="var(--border-color)" />
+            <text class="axis-label" x="${padding.left - 8}" y="${label.y + 3}" text-anchor="end">${label.value.toLocaleString()}</text>
+        `;
+    });
+
+    // X Axis
+    svg += `<line x1="${padding.left}" y1="${height - padding.bottom}" x2="${width - padding.right}" y2="${height - padding.bottom}" stroke="var(--border-color)" />`;
+    xLabels.forEach(label => {
+        svg += `
+            <line x1="${label.x}" y1="${height - padding.bottom}" x2="${label.x}" y2="${height - padding.bottom + 5}" stroke="var(--border-color)" />
+            <text class="axis-label" x="${label.x}" y="${height - padding.bottom + 18}" text-anchor="middle">${label.value}</text>
+        `;
+    });
+
+    svg += '</svg>';
+    return svg;
 }
 
 function showTooltip(e, dataPoint) {
@@ -260,33 +249,34 @@ function showTooltip(e, dataPoint) {
     }
 
     tooltip.innerHTML = `
-        <div style="font-weight: bold; margin-bottom: 5px;">${new Date(dataPoint.date).toLocaleDateString()}</div>
-        <div>Total XP: ${dataPoint.cumulativeXP.toLocaleString()}</div>
-        <div>Daily XP: ${dataPoint.xp.toLocaleString()}</div>
-        <div>Activities: ${dataPoint.transactions.length}</div>
-        <div style="font-size: 0.8em; margin-top: 5px; opacity: 0.8;">Click for details</div>
+        <div class="tooltip-header">${new Date(dataPoint.date).toLocaleDateString()}</div>
+        <div class="tooltip-content">
+            <div class="tooltip-item"><span class="tooltip-label">Total XP:</span><span class="tooltip-value">${dataPoint.cumulativeXP.toLocaleString()}</span></div>
+            <div class="tooltip-item"><span class="tooltip-label">Daily XP:</span><span class="tooltip-value">${dataPoint.xp.toLocaleString()}</span></div>
+            <div class="tooltip-item"><span class="tooltip-label">Activities:</span><span class="tooltip-value">${dataPoint.transactions.length}</span></div>
+        </div>
     `;
 
     tooltip.style.display = 'block';
-    tooltip.style.left = e.pageX + 10 + 'px';
-    tooltip.style.top = e.pageY + 10 + 'px';
+
+    // Positioning
+    const tooltipWidth = 180;
+    const tooltipHeight = 80;
+    let left = e.pageX + 10;
+    let top = e.pageY - tooltipHeight - 10;
+
+    if (left + tooltipWidth > window.innerWidth) left = e.pageX - tooltipWidth - 10;
+    if (top < 10) top = e.pageY + 10;
+    if (top + tooltipHeight > window.innerHeight) top = window.innerHeight - tooltipHeight - 10;
+    if (left < 10) left = 10;
+
+    tooltip.style.left = `${left}px`;
+    tooltip.style.top = `${top}px`;
 }
 
 function hideTooltip() {
     const tooltip = document.querySelector('.chart-tooltip');
-    if (tooltip) {
-        tooltip.style.display = 'none';
-    }
-}
-
-function highlightPoint(point) {
-    point.style.r = '8';
-    point.style.filter = 'drop-shadow(0 0 6px var(--primary-color))';
-}
-
-function unhighlightPoint(point) {
-    point.style.r = '5';
-    point.style.filter = 'none';
+    if (tooltip) tooltip.style.display = 'none';
 }
 
 function addChartInteractivity(container, data) {
@@ -295,17 +285,18 @@ function addChartInteractivity(container, data) {
 
     const points = svg.querySelectorAll('.data-point');
     const line = svg.querySelector('.progress-line');
-    const areaFill = svg.querySelector('.area-fill');
 
     points.forEach((point, index) => {
         point.addEventListener('mouseenter', (e) => {
             showTooltip(e, data[index]);
-            highlightPoint(point);
+            point.style.r = '4';
+            point.style.filter = 'drop-shadow(0 0 4px var(--primary-color))';
         });
 
         point.addEventListener('mouseleave', () => {
             hideTooltip();
-            unhighlightPoint(point);
+            point.style.r = '3';
+            point.style.filter = 'none';
         });
 
         point.addEventListener('click', (e) => {
@@ -313,134 +304,126 @@ function addChartInteractivity(container, data) {
         });
     });
 
-    // Add hover effect to line
-    line.addEventListener('mouseenter', () => {
-        line.style.strokeWidth = '4';
-        line.style.filter = 'drop-shadow(0 0 8px var(--primary-color))';
-    });
+    // Line hover
+    if (line) {
+        line.addEventListener('mouseenter', () => {
+            line.style.strokeWidth = '3';
+            line.style.filter = 'drop-shadow(0 0 6px var(--primary-color))';
+        });
+        line.addEventListener('mouseleave', () => {
+            line.style.strokeWidth = '2';
+            line.style.filter = 'none';
+        });
+    }
 
-    line.addEventListener('mouseleave', () => {
-        line.style.strokeWidth = '3';
-        line.style.filter = 'none';
-    });
+    // Hide tooltip on leave
+    container.addEventListener('mouseleave', hideTooltip);
 }
 
 function cleanProjectName(name) {
     if (!name) return 'Unknown Activity';
-    
-    // Remove common prefixes and suffixes
     let cleaned = name
-        .replace(/^(project|exercise|piscine|module)\s*/i, '') // Remove prefixes
-        .replace(/\s*(project|exercise|piscine|module)$/i, '') // Remove suffixes
-        .replace(/^(piscine-js|piscine-go|piscine-c)\s*/i, '') // Remove piscine variants
-        .replace(/^(core-education|module)\s*/i, '') // Remove core education prefixes
+        .replace(/^(project|exercise|piscine|module)\s*/i, '')
+        .replace(/\s*(project|exercise|piscine|module)$/i, '')
+        .replace(/^(piscine-js|piscine-go|piscine-c)\s*/i, '')
+        .replace(/^(core-education|module)\s*/i, '')
         .trim();
-    
-    // If name becomes empty or too short, return original
-    if (cleaned.length < 2) {
-        return name;
-    }
-    
-    return cleaned;
+    return cleaned.length < 2 ? name : cleaned;
 }
 
 function getAverageXPPerDay(data) {
     if (!data || data.length === 0) return 0;
-    
     const totalXP = data.reduce((sum, day) => sum + day.xp, 0);
-    const days = data.length;
-    
-    return Math.round(totalXP / days);
+    return Math.round(totalXP / data.length);
 }
 
 function showDetailedPopup(data) {
     const overlay = document.createElement('div');
-    overlay.className = 'popup-overlay';
+    overlay.className = 'progress-detail-overlay';
     overlay.innerHTML = `
-        <div class="popup-content">
-            <div class="popup-header">
-                <h3>📊 Day Details: ${new Date(data.date).toLocaleDateString()}</h3>
-                <button class="popup-close" id="close-progress-popup">&times;</button>
+        <div class="progress-detail-popup">
+            <div class="progress-detail-header">
+                <h3><span>📊</span> Day: ${new Date(data.date).toLocaleDateString()}</h3>
+                <button class="progress-detail-close-btn" id="close-progress-popup">&times;</button>
             </div>
-            <div class="popup-body">
-                <div class="popup-stats">
-                    <div class="stat-card">
-                        <div class="stat-number">${data.cumulativeXP.toLocaleString()}</div>
-                        <div class="stat-label">Total XP (Cumulative)</div>
-                        <div class="stat-description">Sum of all XP earned up to this day</div>
+            <div class="progress-detail-content">
+                <div class="progress-detail-summary">
+                    <div class="summary-item">
+                        <span class="summary-label">Cumulative XP:</span>
+                        <span class="summary-value">${data.cumulativeXP.toLocaleString()}</span>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-number">${data.xp.toLocaleString()}</div>
-                        <div class="stat-label">Daily XP</div>
-                        <div class="stat-description">XP earned on this specific day</div>
+                    <div class="summary-item">
+                        <span class="summary-label">Daily XP:</span>
+                        <span class="summary-value">${data.xp.toLocaleString()}</span>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-number">${data.transactions.length}</div>
-                        <div class="stat-label">Activities</div>
-                        <div class="stat-description">Number of actions performed</div>
+                    <div class="summary-item">
+                        <span class="summary-label">Activities:</span>
+                        <span class="summary-value">${data.transactions.length}</span>
                     </div>
                 </div>
-                <div class="transactions-list">
-                    <h4>📝 Activity Details</h4>
-                    <p class="transactions-description">Each row = one activity (project, exercise, etc.)</p>
-                    ${data.transactions.map(transaction => `
-                        <div class="transaction-item">
-                            <div class="transaction-info">
-                                <div class="transaction-xp">+${transaction.amount} XP</div>
-                                <div class="transaction-project">${cleanProjectName(transaction.object?.name || 'Unknown Activity')}</div>
+                <div class="progress-detail-transactions">
+                    <h4>📝 Activities</h4>
+                    <div class="progress-transactions-list">
+                        ${data.transactions.map(t => `
+                            <div class="progress-transaction-item">
+                                <div class="progress-transaction-info">
+                                    <div class="progress-transaction-name">${cleanProjectName(t.object?.name || 'Unknown')}</div>
+                                    <div class="progress-transaction-time">${new Date(t.createdAt).toLocaleTimeString()}</div>
+                                </div>
+                                <div class="progress-transaction-xp">
+                                    <span class="progress-xp-amount">+${t.amount} XP</span>
+                                </div>
                             </div>
-                            <div class="transaction-time">${new Date(transaction.createdAt).toLocaleTimeString()}</div>
-                        </div>
-                    `).join('')}
+                        `).join('')}
+                    </div>
                 </div>
             </div>
         </div>
     `;
     
     document.body.appendChild(overlay);
-    
-    // Close handlers
+
+    // Close
     const closeBtn = overlay.querySelector('#close-progress-popup');
-    const closeOverlay = () => {
-        overlay.remove();
-    };
-    
+    const closeOverlay = () => overlay.remove();
     closeBtn.addEventListener('click', closeOverlay);
-    overlay.addEventListener('click', (e) => {
-        if (e.target === overlay) closeOverlay();
-    });
-    
-    // ESC key handler
-    const handleEsc = (e) => {
-        if (e.key === 'Escape') {
-            closeOverlay();
-            document.removeEventListener('keydown', handleEsc);
-        }
-    };
-    document.addEventListener('keydown', handleEsc);
+    overlay.addEventListener('click', (e) => e.target === overlay && closeOverlay());
+    document.addEventListener('keydown', (e) => e.key === 'Escape' && closeOverlay());
 }
 
 function checkProgressScrollNeeded() {
-    const svgContainer = document.querySelector('.line-chart-svg-container');
+    const chartContainer = document.querySelector('.chart-container');
     const svg = document.querySelector('.line-chart-svg');
     const indicator = document.querySelector('.chart-scroll-indicator');
-    
-    if (!svgContainer || !svg || !indicator) return;
-    
-    // Check if SVG is wider than its container
-    const svgContainerWidth = svgContainer.offsetWidth;
-    const svgWidth = svg.scrollWidth;
-    
-    // On mobile, always show scroll hint if SVG is wider than container
-    const isMobile = window.innerWidth <= 1024;
-    
-    if (svgWidth > svgContainerWidth || (isMobile && svgWidth > svgContainerWidth)) {
-        indicator.style.display = 'block';
-    } else {
-        indicator.style.display = 'none';
-    }
+
+    if (!chartContainer || !svg || !indicator) return;
+
+    setTimeout(() => {
+        const containerWidth = chartContainer.offsetWidth;
+        const svgWidth = parseFloat(svg.getAttribute('width')) || svg.scrollWidth;
+
+        const needsScrollX = svgWidth > containerWidth;
+        // Игнорируем y-scroll на десктопе
+        const isDesktop = window.innerWidth > 1024;
+        const needsScrollY = !isDesktop && (svg.scrollHeight > chartContainer.offsetHeight);
+
+        if (needsScrollX || needsScrollY) {
+            indicator.style.display = 'block';
+            chartContainer.style.overflowX = needsScrollX ? 'auto' : 'visible';
+            if (!isDesktop) {
+                chartContainer.style.overflowY = needsScrollY ? 'auto' : 'visible';
+            } else {
+                chartContainer.style.overflowY = 'hidden';
+            }
+            indicator.innerHTML = '<span class="scroll-hint">← Scroll timeline →</span>';
+        } else {
+            indicator.style.display = 'none';
+            chartContainer.style.overflowX = 'visible';
+            chartContainer.style.overflowY = isDesktop ? 'hidden' : 'visible';
+        }
+    }, 50);
 }
 
-// Check scroll on load and resize
-setTimeout(checkProgressScrollNeeded, 100);
+// Init
+setTimeout(checkProgressScrollNeeded, 50);
 window.addEventListener('resize', checkProgressScrollNeeded);

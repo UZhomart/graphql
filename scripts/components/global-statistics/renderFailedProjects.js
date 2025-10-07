@@ -22,11 +22,11 @@ export const renderFailedProjects = async () => {
         const failedProjects = projectsData.filter(p => p.grade !== null && p.grade < 1);
         
         container.innerHTML = /*html*/ `
-        <div class="project-card" id="failed-projects-card">
-            <div class="project-icon">❌</div>
-            <div class="project-value">${failedProjects.length}</div>
-            <div class="project-label">Failed Projects</div>
-            <div class="project-subtitle">Not Completed</div>
+        <div class="global-stat-card" id="failed-projects-card">
+            <div class="global-stat-icon">❌</div>
+            <div class="global-stat-value">${failedProjects.length}</div>
+            <div class="global-stat-label">Failed Projects</div>
+            <div class="global-stat-subtitle">Not Completed</div>
         </div>
         `;
 
@@ -40,11 +40,11 @@ export const renderFailedProjects = async () => {
         
         // Show error state
         container.innerHTML = /*html*/ `
-        <div class="project-card">
-            <div class="project-icon">❌</div>
-            <div class="project-value">--</div>
-            <div class="project-label">Failed Projects</div>
-            <div class="project-subtitle">Error loading data</div>
+        <div class="global-stat-card">
+            <div class="global-stat-icon">❌</div>
+            <div class="global-stat-value">--</div>
+            <div class="global-stat-label">Failed Projects</div>
+            <div class="global-stat-subtitle">Error loading data</div>
         </div>
         `;
         
