@@ -259,24 +259,59 @@ function showTooltip(e, dataPoint) {
 
     tooltip.style.display = 'block';
 
-    // Positioning
-    const tooltipWidth = 180;
-    const tooltipHeight = 80;
-    let left = e.pageX + 10;
-    let top = e.pageY - tooltipHeight - 10;
+    // Get tooltip dimensions after rendering
+    const tooltipRect = tooltip.getBoundingClientRect();
+    const tooltipWidth = tooltipRect.width;
+    const tooltipHeight = tooltipRect.height;
+    
+    // Get mouse position relative to viewport
+    const mouseX = e.clientX;
+    const mouseY = e.clientY;
+    
+    // Calculate initial position
+    let left = mouseX + 15;
+    let top = mouseY - tooltipHeight - 15;
 
-    if (left + tooltipWidth > window.innerWidth) left = e.pageX - tooltipWidth - 10;
-    if (top < 10) top = e.pageY + 10;
-    if (top + tooltipHeight > window.innerHeight) top = window.innerHeight - tooltipHeight - 10;
-    if (left < 10) left = 10;
+    // Boundary checks with margins
+    const margin = 10;
+    
+    // Check right boundary
+    if (left + tooltipWidth > window.innerWidth - margin) {
+        left = mouseX - tooltipWidth - 15;
+    }
+    
+    // Check left boundary
+    if (left < margin) {
+        left = margin;
+    }
+    
+    // Check top boundary
+    if (top < margin) {
+        top = mouseY + 15;
+    }
+    
+    // Check bottom boundary
+    if (top + tooltipHeight > window.innerHeight - margin) {
+        top = window.innerHeight - tooltipHeight - margin;
+    }
 
+    // Apply position
     tooltip.style.left = `${left}px`;
     tooltip.style.top = `${top}px`;
+    tooltip.style.transform = 'none';
+    tooltip.style.opacity = '1';
 }
 
 function hideTooltip() {
     const tooltip = document.querySelector('.chart-tooltip');
-    if (tooltip) tooltip.style.display = 'none';
+    if (tooltip) {
+        tooltip.style.opacity = '0';
+        setTimeout(() => {
+            if (tooltip && tooltip.style.opacity === '0') {
+                tooltip.style.display = 'none';
+            }
+        }, 150);
+    }
 }
 
 function addChartInteractivity(container, data) {
