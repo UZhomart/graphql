@@ -14,7 +14,7 @@ export async function renderTeamworkStatus(userId) {
 
     container.innerHTML = `
         <div class="teamwork-section">
-            <h3 class="teamwork-title">🤝 Teamwork Status (Core education) (only succeeded projects)</h3>
+            <h3 class="teamwork-title">🤝 Teamwork Status (Core education) (finished not always succeeded)</h3>
             <div class="teamwork-container">
                 <div class="teamwork-loading" id="teamwork-loading">
                     <div class="loading-spinner"></div>
@@ -65,7 +65,7 @@ async function loadTeamworkData(userId) {
         console.log('All finished group IDs:', allFinishedGroupIds);
         console.log('Sample finished groups:', groupsResponse.data.group.slice(0, 3));
         
-        console.log('\n=== Project details for each of 14 projects ===');
+        console.log('\n=== Project details for each finished project ===');
         groupsResponse.data.group.forEach(group => {
             console.log(`Group ${group.id} (${group.object.name}): status=${group.status}, type=${group.object.type}`);
         });
@@ -105,34 +105,22 @@ async function loadTeamworkData(userId) {
             });
             
             console.log('Closure type distribution:', closureTypeCounts);
-            console.log('\n=== Audit status for each of 14 projects ===');
-            
+            console.log('\n=== Audit status for each finished project ===');
+
             allFinishedGroupIds.forEach(groupId => {
                 const audits = auditsByGroup[groupId] || [];
                 console.log(`Group ${groupId}: ${audits.length > 0 ? audits.join(', ') : 'NO AUDITS'}`);
             });
         }
         
-        // Start with all finished groups
-        let succeededGroupIds = [...allFinishedGroupIds];
-        
-        // Remove groups that have failed audits
-        if (auditsResponse && auditsResponse.data && auditsResponse.data.audit) {
-            const failedGroupIds = new Set(
-                auditsResponse.data.audit
-                    .filter(audit => audit.closureType === 'failed' || audit.closureType === 'autoFailed')
-                    .map(audit => audit.groupId)
-            );
-            
-            console.log('Failed group IDs to exclude:', [...failedGroupIds]);
-            succeededGroupIds = succeededGroupIds.filter(groupId => !failedGroupIds.has(groupId));
-        }
-        
-        console.log('Final group IDs to process (all finished except failed):', succeededGroupIds.length);
+        // Use all finished groups without filtering by audit results
+        const finishedGroupIds = [...allFinishedGroupIds];
+
+        console.log('Final group IDs to process (all finished projects):', finishedGroupIds.length);
         
         // Fourth, get teamwork data for these groups
         console.log('Step 3: Getting teamwork data for groups...');
-        const response = await fetchGraphQL(GET_TEAMWORK_INFO_V3, { userId, groupIds: succeededGroupIds }, token);
+        const response = await fetchGraphQL(GET_TEAMWORK_INFO_V3, { userId, groupIds: finishedGroupIds }, token);
         console.log('Teamwork response:', response);
         
         if (response && response.data && response.data.group_user) {
