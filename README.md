@@ -16,6 +16,7 @@ A modern, interactive dashboard for Tomorrow School students to view their learn
 - [Usage](#usage)
 - [Authentication](#authentication)
 - [Hosting](#hosting)
+- [Author](#author)
 - [License](#license)
 
 ## Features
@@ -54,20 +55,18 @@ A modern, interactive dashboard for Tomorrow School students to view their learn
 
 - **Smart Search**: Priority-based search with exact login matching
 - **Clear Search**: Red clear button (X) to reset all search results
-- **Public Data**: Display ID, Login, First Name, and Last Name
-- **Responsive Cards**: Modern card layout with hover effects and exact match highlighting
+- **Public Data**: Display ID, Login, First Name, and Last Name, audit ratio, levels on each program
 - **Real-time Search**: Instant filtering as you type
 - **Teamwork Analytics**: Comprehensive collaboration statistics
 
 #### 🤝 Teamwork Analytics
 
-- **Smart Project Filtering**: Shows all finished projects except those with failed audits
+- **Smart Project Filtering**: Shows all finished projects (iy may be also unsuccesful)
 - **Unique Teammates**: Count of different people worked together with
 - **Team Projects**: Number of unique collaborative projects (excluding solo work)
 - **Solo Projects**: Individual projects completed with detailed popup list
 - **Collaboration Details**: Complete list of teammates and shared projects
 - **Advanced Audit Logic**: Includes projects with succeeded, unused, expired audits or no audits
-- **Failed Project Exclusion**: Automatically excludes projects with failed/autoFailed audits
 - **Interactive Statistics**: Clickable cards with detailed information popups
 
 #### 📊 Data Visualizations
@@ -93,8 +92,10 @@ A modern, interactive dashboard for Tomorrow School students to view their learn
 - **Glassmorphism Design**: Translucent cards with backdrop blur effects
 - **Gradient Themes**: Beautiful color transitions throughout the interface
 - **Smooth Animations**: Hover effects, transitions, and micro-interactions
-- **Responsive Layout**: Mobile-first design approach
+- **Responsive Layout**: Mobile-first design approach with adaptive table layouts
 - **Dark Theme**: Easy on the eyes with vibrant accent colors
+- **Adaptive Statistics**: Tables automatically stack vertically on mobile devices for optimal viewing
+- **No Horizontal Scrolling**: All content fits within viewport on any device size
 
 ## Screenshots
 
@@ -242,7 +243,7 @@ graphql-master/
 - **`profile.css`**: Dashboard styles with modern UI, gradients, and interactive elements
 - **`program-selector.css`**: Program selector styles with interactive cards and hover effects
 - **`global-statistics.css`**: Global statistics section styles with card layouts and modal popups
-- **`participants-info.css`**: Participants info section styles with search interface, teamwork analytics, and responsive card layouts
+- **`participants-info.css`**: Participants info section styles with search interface, teamwork analytics, responsive card layouts, and adaptive statistics tables that stack vertically on mobile devices
 
 ## Installation & Setup
 
@@ -381,6 +382,8 @@ Click the "Logout" button in the top-right corner to securely end your session.
 - **Global Analytics**: Audit ratios, project success rates, and performance metrics
 - **Visual Data**: Interactive charts and graphs for progress tracking
 - **Real-time Updates**: Statistics update based on selected program
+- **Mobile-Responsive Tables**: Statistics tables adapt from horizontal to vertical layout on smaller screens
+- **Optimized Mobile Experience**: No horizontal scrolling required on any device
 
 ## Authentication
 
@@ -413,16 +416,12 @@ The project is hosted on GitHub Pages for free:
 - **Custom Domain**: Support for custom domains
 - **HTTPS**: Automatic SSL certificate
 
-## License
-
-This project is part of the Tomorrow School curriculum and is intended for educational purposes.
-
 ## Author
 
 - Zhomart Utemissov
 
 - GitHub: [@uzhomart](https://github.com/uzhomart)
-- Live Demo: [https://uzhomart.github.io/graphql/](https://uzhomart.github.io/graphql/)
+- Live Demo: [https://uzhomart.github.io/graphql/](https://uzhomart.github.io/graphql/) or [https://tubular-narwhal-7ef946.netlify.app//](https://tubular-narwhal-7ef946.netlify.app/) 
 
 ## Acknowledgments
 
@@ -430,6 +429,10 @@ This project is part of the Tomorrow School curriculum and is intended for educa
 - Font Awesome for the icon library
 - GitHub Pages for free hosting
 - The open-source community for inspiration and tools
+
+## License
+
+This project is part of the Tomorrow School curriculum and is intended for educational purposes.
 
 ---
 

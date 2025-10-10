@@ -1230,14 +1230,19 @@
 }
 
 .participant-circles-row {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(160px, 1fr));
+    display: flex;
+    justify-content: space-around;
     gap: 16px;
     align-items: stretch;
+    flex-wrap: wrap;
 }
 
 .participant-circles-row.five-cols {
-    grid-template-columns: repeat(5, minmax(160px, 1fr));
+    display: flex;
+    justify-content: space-around;
+    gap: 16px;
+    align-items: stretch;
+    flex-wrap: wrap;
 }
 
 /* Reuse look and feel similar to program selector */
@@ -1326,19 +1331,74 @@
 
 @media screen and (max-width: 900px) {
     .participant-circles-row {
-        grid-template-columns: repeat(2, minmax(160px, 1fr));
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .participant-circles-row .program-stat-card {
+        min-width: auto;
+        padding: 15px;
+    }
+}
+
+@media screen and (max-width: 700px) {
+    .participant-circles-row {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .participant-circles-row .program-stat-card {
+        min-width: auto;
+        padding: 15px;
+    }
+    
+    .participant-circles-row .stat-circle {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .participant-circles-row .stat-number {
+        font-size: 20px;
+    }
+    
+    .participant-circles-row .stat-unit {
+        font-size: 10px;
     }
 }
 
 @media screen and (max-width: 560px) {
     .participant-circles-row {
-        grid-template-columns: 1fr;
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .participant-circles-row .program-stat-card {
+        min-width: auto;
+        padding: 12px;
+    }
+    
+    .participant-circles-row .stat-circle {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .participant-circles-row .stat-number {
+        font-size: 18px;
+    }
+    
+    .participant-circles-row .stat-unit {
+        font-size: 9px;
+    }
+    
+    .participant-circles-row .stat-label {
+        font-size: 12px;
     }
 }
 .participant-tables-row {
-    display: grid;
-    grid-template-columns: repeat(5, minmax(160px, 1fr));
+    display: flex;
+    justify-content: space-around;
     gap: 12px;
+    flex-wrap: wrap;
 }
 
 .mini-table {
@@ -1378,4 +1438,62 @@
     border-radius: 10px;
     background: rgba(255,255,255,0.05);
     border: 1px dashed rgba(255,255,255,0.1);
+}
+
+/* Responsive design for participant tables */
+@media screen and (max-width: 900px) {
+    .participant-tables-row {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .mini-table {
+        min-width: auto;
+        padding: 10px 12px;
+    }
+}
+
+@media screen and (max-width: 700px) {
+    .participant-tables-row {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .mini-table {
+        padding: 8px 10px;
+    }
+    
+    .mini-table-title {
+        font-size: 14px;
+        margin-bottom: 6px;
+    }
+    
+    .mini-row {
+        gap: 6px;
+    }
+}
+
+@media screen and (max-width: 560px) {
+    .participant-tables-row {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .mini-table {
+        padding: 6px 8px;
+    }
+    
+    .mini-table-title {
+        font-size: 12px;
+        margin-bottom: 4px;
+    }
+    
+    .mini-row {
+        gap: 4px;
+        font-size: 12px;
+    }
+    
+    .mini-label, .mini-value {
+        font-size: 11px;
+    }
 }
