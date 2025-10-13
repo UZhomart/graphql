@@ -49,7 +49,9 @@ A modern, interactive dashboard for Tomorrow School students to view their learn
 - **Audit Ratio**: Done vs Received with detailed breakdown
 - **Audit Analytics**: Total audits, success/failure rates
 - **Project Statistics**: Successful and failed project counts
-- **Interactive Modals**: Detailed information for each statistic
+- **Memory Game**: Admission game statistics with level progression and attempts
+- **Zzle Game**: Admission game statistics with level progression and attempts
+- **Interactive Modals**: Detailed information for each statistic including game performance
 
 #### 👥 Participants Info
 
@@ -154,11 +156,15 @@ graphql-master/
 │   │   │   ├── auditRatioPopup.js      # Modal for detailed audit ratio breakdown
 │   │   │   ├── auditsPopup.js          # Modal for audit statistics (success/failure rates)
 │   │   │   ├── failedProjectsPopup.js  # Modal showing failed projects list
+│   │   │   ├── memoryGamePopup.js      # Modal for Memory game detailed statistics
 │   │   │   ├── renderAudits.js         # Audits card component with statistics
 │   │   │   ├── renderFailedProjects.js # Failed projects card component
 │   │   │   ├── renderGlobalStatistics.js # Main global statistics container
+│   │   │   ├── renderMemoryGame.js     # Memory game card component
 │   │   │   ├── renderSuccessfulProjects.js # Successful projects card component
-│   │   │   └── successfulProjectsPopup.js # Modal showing successful projects list
+│   │   │   ├── renderZzleGame.js       # Zzle game card component
+│   │   │   ├── successfulProjectsPopup.js # Modal showing successful projects list
+│   │   │   └── zzleGamePopup.js        # Modal for Zzle game detailed statistics
 │   │   ├── 📁 graphs/
 │   │   │   ├── activityHeatmap.js      # D3.js-based activity heatmap visualization
 │   │   │   └── progressLineChart.js   # Interactive XP progress line chart with detailed popups
@@ -195,7 +201,7 @@ graphql-master/
 #### 🔐 Authentication & API
 
 - **`authRequests.js`**: Handles JWT authentication with Tomorrow School API, includes safe encoding for non-Latin characters
-- **`graphql.js`**: Contains all GraphQL queries for user data, transactions, audits, project progress, participants info, and teamwork analytics with smart filtering (accepted participants only) and advanced audit logic (excludes failed projects)
+- **`graphql.js`**: Contains all GraphQL queries for user data, transactions, audits, project progress, participants info, teamwork analytics, and admission games data with smart filtering (accepted participants only) and advanced audit logic (excludes failed projects)
 - **`graphqlRequests.js`**: Manages GraphQL requests with proper error handling and JWT token management
 
 #### 🎨 UI Components
@@ -204,7 +210,7 @@ graphql-master/
 - **`profileComponent.js`**: Main dashboard orchestrator that renders all sections in proper order
 - **`renderProfileInfo.js`**: User profile information with expandable "More" section for additional details
 - **`renderProgramSelector.js`**: Program selection (Core Education, Piscine JS, Piscine Go) with dynamic statistics
-- **`renderGlobalStatistics.js`**: Global statistics container with audit ratio, audits, and project statistics
+- **`renderGlobalStatistics.js`**: Global statistics container with audit ratio, audits, project statistics, and admission games (Memory & Zzle)
 - **`renderParticipantsInfo.js`**: Participants search and information display with login-based lookup
 
 #### 📊 Data Visualization
@@ -217,10 +223,14 @@ graphql-master/
 - **`renderAudits.js`**: Audit statistics card showing total audits, success/failure rates
 - **`renderSuccessfulProjects.js`**: Successful projects counter with detailed project list
 - **`renderFailedProjects.js`**: Failed projects counter with retry attempt tracking
+- **`renderMemoryGame.js`**: Memory game card component showing level progression and statistics
+- **`renderZzleGame.js`**: Zzle game card component showing level progression and statistics
 - **`auditRatioPopup.js`**: Detailed audit ratio breakdown (Done vs Received)
 - **`auditsPopup.js`**: Comprehensive audit statistics modal
 - **`successfulProjectsPopup.js`**: Detailed successful projects list with grades and dates
 - **`failedProjectsPopup.js`**: Detailed failed projects list with attempt counts
+- **`memoryGamePopup.js`**: Memory game detailed statistics modal with level progression data
+- **`zzleGamePopup.js`**: Zzle game detailed statistics modal with level progression data
 
 #### 👥 Participants & Teamwork
 
@@ -242,7 +252,7 @@ graphql-master/
 - **`login.css`**: Login page styles with glassmorphism effects, gradients, and animations
 - **`profile.css`**: Dashboard styles with modern UI, gradients, and interactive elements
 - **`program-selector.css`**: Program selector styles with interactive cards and hover effects
-- **`global-statistics.css`**: Global statistics section styles with card layouts and modal popups
+- **`global-statistics.css`**: Global statistics section styles with card layouts, modal popups, and admission games styling
 - **`participants-info.css`**: Participants info section styles with search interface, teamwork analytics, responsive card layouts, and adaptive statistics tables that stack vertically on mobile devices
 
 ## Installation & Setup
@@ -347,10 +357,11 @@ The project is automatically deployed to GitHub Pages. Any push to the `main` br
 
 - **Profile Information**: View and expand your personal details
 - **Program Selector**: Switch between Core Education, Piscine JS, and Piscine Go
-- **Global Statistics**: Click on any statistic card for detailed information
+- **Global Statistics**: Click on any statistic card for detailed information including admission games performance
 - **Participants Search**: Search for other students with smart exact-match priority
 - **Teamwork Analytics**: View collaboration statistics and solo project details
 - **Data Visualizations**: Interactive charts showing your progress and skills
+- **Admission Games**: View your performance in Memory and Zzle games with detailed statistics
 
 ### Logout
 
@@ -376,10 +387,29 @@ Click the "Logout" button in the top-right corner to securely end your session.
 - **Detailed Project Lists**: Complete breakdown of shared projects with each teammate
 - **Interactive Popups**: Clickable statistics with detailed information modals
 
+### 🎮 Admission Games Analytics
+
+- **Memory Game**: Brain training game performance with level progression tracking
+  - **Level Achievement**: Shows the highest level reached by the student
+  - **Attempt Statistics**: Total attempts and average attempts per level
+  - **Performance Metrics**: Duration, points earned, and completion date
+  - **Detailed Modal**: Comprehensive statistics with game session information
+
+- **Zzle Game**: Puzzle-solving game performance with detailed analytics
+  - **Level Progression**: Tracks student's progress through puzzle levels
+  - **Attempt Analysis**: Shows total attempts and efficiency metrics
+  - **Game Session Data**: Duration, scoring, and completion statistics
+  - **Interactive Details**: Clickable cards with full performance breakdown
+
+- **Game Integration**: Seamlessly integrated into Global Statistics section
+- **Responsive Design**: Mobile-optimized cards and modals for all devices
+- **Escape Key Support**: Standard modal controls for consistent user experience
+
 ### 📊 Comprehensive Statistics
 
 - **Program-specific Data**: Dynamic statistics for Core Education, Piscine JS, and Piscine Go
 - **Global Analytics**: Audit ratios, project success rates, and performance metrics
+- **Admission Games**: Memory and Zzle game performance with level progression and attempt statistics
 - **Visual Data**: Interactive charts and graphs for progress tracking
 - **Real-time Updates**: Statistics update based on selected program
 - **Mobile-Responsive Tables**: Statistics tables adapt from horizontal to vertical layout on smaller screens

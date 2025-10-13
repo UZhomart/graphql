@@ -5,6 +5,8 @@ import { showAuditRatioPopup } from "./auditRatioPopup.js";
 import { renderAudits } from "./renderAudits.js";
 import { renderSuccessfulProjects } from "./renderSuccessfulProjects.js";
 import { renderFailedProjects } from "./renderFailedProjects.js";
+import { renderMemoryGame } from "./renderMemoryGame.js";
+import { renderZzleGame } from "./renderZzleGame.js";
 
 export const renderGlobalStatistics = async () => {
     // Render global statistics
@@ -38,6 +40,8 @@ export const renderGlobalStatistics = async () => {
             <div id="audits"></div>
             <div id="successful-projects"></div>
             <div id="failed-projects"></div>
+            <div id="memory-game"></div>
+            <div id="zzle-game"></div>
         </div>
         `;
 
@@ -50,6 +54,8 @@ export const renderGlobalStatistics = async () => {
         await renderAudits();
         await renderSuccessfulProjects();
         await renderFailedProjects();
+        await renderMemoryGame();
+        await renderZzleGame();
 
     } catch (error) {
         console.error('Error loading global statistics:', error);

@@ -209,3 +209,16 @@ query GetEventUserLevelsByLogin($login: String!) {
     }
   }
 }`
+
+export const GET_GAMES_INFO = /*gql*/`
+query GetGamesInfo($resultId: Int!) {
+  result(where: {id: {_eq: $resultId}}) {
+    id
+    attrs
+    audits_aggregate {
+      nodes {
+        id
+      }
+    }
+  }
+}`
