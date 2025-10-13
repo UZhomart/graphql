@@ -48,6 +48,8 @@
     position: relative;
     word-wrap: break-word;
     overflow-wrap: break-word;
+    min-height: 210px;
+    justify-content: center;
 }
 
 .global-stat-card::after {
@@ -338,7 +340,9 @@
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.1);
     min-width: 200px;
+    min-height: 210px;
     position: relative;
+    justify-content: center;
 }
 
 .audit-card::after {
@@ -509,7 +513,9 @@
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.1);
     min-width: 200px;
+    min-height: 210px;
     position: relative;
+    justify-content: center;
 }
 
 /* Games styles */
@@ -524,7 +530,9 @@
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.1);
     min-width: 200px;
+    min-height: 210px;
     position: relative;
+    justify-content: center;
 }
 
 .game-card::after {
