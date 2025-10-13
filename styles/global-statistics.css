@@ -859,6 +859,53 @@
     color: var(--primary-color);
 }
 
+.memory-game-details,
+.zzle-game-details {
+    margin-top: 20px;
+}
+
+.memory-game-details h4,
+.zzle-game-details h4 {
+    margin: 0 0 20px 0;
+    color: var(--primary-color);
+    font-size: 1.2em;
+    font-weight: 600;
+}
+
+.levels-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+}
+
+.level-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.level-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(34, 211, 238, 0.3);
+    transform: translateY(-2px);
+}
+
+.level-number {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: 5px;
+}
+
+.level-attempts {
+    font-size: 14px;
+    color: var(--text-color-secondary);
+}
 
 @media screen and (max-width: 564px) {
     .global-stat-card,
@@ -938,6 +985,11 @@
     .audit-detail-item {
         flex-direction: column;
         align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .levels-grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
         gap: 10px;
     }
 }

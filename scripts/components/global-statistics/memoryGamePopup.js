@@ -47,6 +47,18 @@ export const showMemoryGamePopup = (memoryGame) => {
                     <div class="game-summary-value">${new Date(memoryGame.startedAt).toLocaleDateString()}</div>
                 </div>
             </div>
+            
+            <div class="memory-game-details">
+                <h4>Level Progress</h4>
+                <div class="levels-grid">
+                    ${memoryGame.results.map(result => /*html*/ `
+                        <div class="level-item">
+                            <div class="level-number">Level ${result.level}</div>
+                            <div class="level-attempts">${result.attempts} ${result.attempts === 1 ? 'attempt' : 'attempts'}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
         </div>
     </div>
     `;
