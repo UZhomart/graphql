@@ -6,19 +6,32 @@ export const renderMemoryGame = async () => {
     const container = document.getElementById("memory-game");
     
     try {
-        // Fetch games data - using result ID 14389 as provided in the example
+        // Fetch games data for current user
         const token = localStorage.getItem('JWT');
-        const response = await fetchGraphQL(GET_GAMES_INFO, { resultId: 14389 }, token);
         
-        if (!response || !response.data || !response.data.result || response.data.result.length === 0) {
+        if (!token) {
+            throw new Error('Authentication token not found. Please log in again.');
+        }
+        
+        const response = await fetchGraphQL(GET_GAMES_INFO, {}, token);
+        
+        if (!response || !response.data || !response.data.result) {
             throw new Error('No games data found');
         }
 
-        const resultData = response.data.result[0];
-        const attrs = resultData.attrs;
+        const results = response.data.result;
+        
+        // Find the result that contains games data
+        let gamesData = null;
+        for (const result of results) {
+            if (result.attrs && result.attrs.games) {
+                gamesData = result.attrs.games;
+                break;
+            }
+        }
         
         // Find memory game data
-        const memoryGame = attrs?.games?.find(game => game.name === 'memory');
+        const memoryGame = gamesData?.find(game => game.name === 'memory');
         
         if (!memoryGame) {
             container.innerHTML = /*html*/ `
@@ -59,13 +72,23 @@ export const renderMemoryGame = async () => {
     } catch (error) {
         console.error('Error loading memory game data:', error);
         
+        // Check if it's a JWT error and handle accordingly
+        const errorMessage = error.message || 'Unknown error';
+        let subtitle = 'Error loading data';
+        
+        if (errorMessage.includes('JWT') || errorMessage.includes('Authentication')) {
+            subtitle = 'Please log in again';
+        } else if (errorMessage.includes('No games data found')) {
+            subtitle = 'No data available';
+        }
+        
         // Show error state
         container.innerHTML = /*html*/ `
         <div class="game-card">
             <div class="game-icon">🧠</div>
             <div class="game-value">--</div>
             <div class="game-label">Memory Game</div>
-            <div class="game-subtitle">Error loading data</div>
+            <div class="game-subtitle">${subtitle}</div>
         </div>
         `;
     }

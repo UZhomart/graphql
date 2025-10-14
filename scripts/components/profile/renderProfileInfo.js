@@ -22,12 +22,34 @@ export const renderProfileInfo = async () => {
             }
         })
         .catch((error) => {
-            if (typeof error === "string" && error.includes('JWTExpired')) handleLogout();
+            if (typeof error === "string" && error.includes('JWTExpired')) {
+                handleLogout();
+                return;
+            }
             console.error(error);
+            // Set data to null if there was an error
+            data = null;
         });
 
     // Render profile info
     const container = document.getElementById("profile-info");
+
+    // Check if data is available before rendering
+    if (!data) {
+        container.innerHTML = /*html*/ `
+        <div class="chart-border"></div>
+        <h2 class="profile-title">Profile Information</h2>
+        <div class="profile-info-container">
+            <div class="profile-main-info">
+                <div class="profile-info-item">
+                    <span class="profile-label">Error:</span>
+                    <span class="profile-value">Failed to load profile data</span>
+                </div>
+            </div>
+        </div>
+        `;
+        return;
+    }
 
     container.innerHTML = /*html*/ `
     <div class="chart-border"></div>
