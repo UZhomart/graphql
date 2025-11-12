@@ -70,7 +70,7 @@ export const renderZzleGame = async () => {
         });
 
     } catch (error) {
-        console.error('Error loading zzle game data:', error);
+        // Error loading zzle game data
         
         // Check if it's a JWT error and handle accordingly
         const errorMessage = error.message || 'Unknown error';

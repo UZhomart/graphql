@@ -9,7 +9,6 @@ export async function renderProgressLineChart(userId) {
         const response = await fetchGraphQL(GET_USER_TRANSACTIONS, { userId }, token);
 
         if (response.errors) {
-            console.error('Error fetching progress data:', response.errors);
             return;
         }
 
@@ -89,7 +88,7 @@ export async function renderProgressLineChart(userId) {
         });
 
     } catch (error) {
-        console.error('Error rendering progress line chart:', error);
+        // Error rendering progress line chart
     }
 }
 
@@ -179,18 +178,38 @@ function renderLineChartSVG(data) {
         yLabels.push({ value: Math.round(value), y });
     }
 
-    // X Labels
+    // X Labels - show more labels and always include the last point
     const xLabels = [];
-    let maxLabels = window.innerWidth < 480 ? 3 : window.innerWidth < 768 ? 4 : 6;
+    let maxLabels = window.innerWidth < 480 ? 5 : window.innerWidth < 768 ? 8 : 12;
     const labelInterval = Math.max(1, Math.floor(data.length / maxLabels));
+    const processedIndices = new Set();
+    
+    // Add labels at intervals
     for (let i = 0; i < data.length; i += labelInterval) {
         const x = padding.left + (i * xScale);
         const date = new Date(data[i].date);
         xLabels.push({
             value: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-            x
+            x,
+            index: i
+        });
+        processedIndices.add(i);
+    }
+    
+    // Always add the last point if not already included
+    const lastIndex = data.length - 1;
+    if (!processedIndices.has(lastIndex)) {
+        const x = padding.left + (lastIndex * xScale);
+        const date = new Date(data[lastIndex].date);
+        xLabels.push({
+            value: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+            x,
+            index: lastIndex
         });
     }
+    
+    // Sort by index to maintain order
+    xLabels.sort((a, b) => a.index - b.index);
 
     // Build SVG
     let svg = `<svg width="${width}" height="${height}" class="line-chart-svg" viewBox="0 0 ${width} ${height}">`;

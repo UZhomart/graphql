@@ -46,8 +46,12 @@ export const renderProgramSelector = async () => {
                 <span class="stat-number" id="program-transactions">0</span>
                 <span class="stat-unit">TXN</span>
             </div>
-            <div class="stat-label">Transactions</div>
+            <div class="stat-label">Transactions<sup style="color: var(--primary-color); font-size: 0.8em; cursor: help;">*</sup></div>
         </div>
+    </div>
+    <div class="program-footnote" style="padding: 15px 20px 20px; border-top: 1px solid rgba(255,255,255,0.1); margin-top: 10px; font-size: 0.85em; color: var(--text-color-secondary);">
+        <sup style="color: var(--primary-color);">*</sup> <strong>What is a Transaction?</strong><br>
+        A Transaction = the moment when a project/assignment was successfully accepted (not a commit!). It's a record of XP awarded for completed work.
     </div>
 `;
 
@@ -101,7 +105,6 @@ async function updateProgramStats() {
         document.getElementById('program-transactions').textContent = programData.transactions;
         
     } catch (error) {
-        console.error('Error updating program stats:', error);
         if (typeof error === "string" && error.includes('JWTExpired')) handleLogout();
     }
 }

@@ -451,7 +451,7 @@ The project is hosted on GitHub Pages for free:
 - Zhomart Utemissov
 
 - GitHub: [@uzhomart](https://github.com/uzhomart)
-- Live Demo: [https://uzhomart.github.io/graphql/](https://uzhomart.github.io/graphql/) or [https://tubular-narwhal-7ef946.netlify.app//](https://tubular-narwhal-7ef946.netlify.app/) 
+- Live Demo: [https://uzhomart.github.io/graphql/](https://uzhomart.github.io/graphql/) or [https://tubular-narwhal-7ef946.netlify.app//](https://tubular-narwhal-7ef946.netlify.app/)
 
 ## Acknowledgments
 

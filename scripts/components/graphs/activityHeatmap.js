@@ -9,7 +9,6 @@ export async function renderActivityHeatmap(userId) {
         const response = await fetchGraphQL(GET_ACTIVITY_DATA, { userId }, token);
         
         if (response.errors) {
-            console.error('Error fetching activity data:', response.errors);
             return;
         }
 
@@ -39,18 +38,14 @@ export async function renderActivityHeatmap(userId) {
                 <div class="heatmap-header">
                     <h3>🔥 Activity Heatmap</h3>
                     <div class="heatmap-description">
-                        <p>Shows when you're most active (earning XP). Darker green = more activity</p>
+                        <p>Shows when you're most active (earning XP). Darker green = more activity <br><br> <sup style="color: var(--primary-color);">*</sup> <strong>What is a Transaction?</strong><br>
+        A Transaction = the moment when a project/assignment was successfully accepted (not a commit!). It's a record of XP awarded for completed work.</p>
                     </div>
                     <div class="heatmap-stats">
                         <div class="stat-item">
                             <span class="stat-icon">📊</span>
                             <span class="stat-value">${activityData.length}</span>
-                            <span class="stat-label">Transactions</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-icon">📅</span>
-                            <span class="stat-value">30</span>
-                            <span class="stat-label">Days</span>
+                            <span class="stat-label">Transactions<sup style="color: var(--primary-color); font-size: 0.7em; cursor: help;">*</sup></span>
                         </div>
                         <div class="stat-item">
                             <span class="stat-icon">⚡</span>
@@ -101,7 +96,7 @@ export async function renderActivityHeatmap(userId) {
         addHoverEffects(container, heatmapData);
 
     } catch (error) {
-        console.error('Error rendering activity heatmap:', error);
+        // Error rendering activity heatmap
     }
 }
 
@@ -189,7 +184,7 @@ function addHoverEffects(container, heatmapData) {
 }
 
 function showHeatmapTooltip(event, day, hour, count, transactions) {
-    const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const dayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
     
     // Удаляем существующий tooltip если есть
     hideHeatmapTooltip();

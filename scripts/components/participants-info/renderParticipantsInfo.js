@@ -49,19 +49,15 @@ async function loadParticipantsData() {
     try {
         const token = localStorage.getItem('JWT');
         if (!token) {
-            console.error('No JWT token found');
             return;
         }
         
         const response = await fetchGraphQL(GET_PARTICIPANTS_INFO, {}, token);
         if (response && response.data && response.data.user_public_view) {
             participantsData = response.data.user_public_view;
-            console.log('Participants data loaded:', participantsData.length, 'users');
-        } else {
-            console.error('No participants data received:', response);
         }
     } catch (error) {
-        console.error('Error loading participants data:', error);
+        // Error loading participants data
     }
 }
 
@@ -251,6 +247,6 @@ async function renderParticipantProgramStats(participant) {
         `;
     } catch (e) {
         container.innerHTML = `<div class="tables-error">Failed to load program data</div>`;
-        console.error('Failed to load event user levels:', e);
+        // Failed to load event user levels
     }
 }

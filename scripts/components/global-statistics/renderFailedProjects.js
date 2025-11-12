@@ -36,7 +36,7 @@ export const renderFailedProjects = async () => {
         });
 
     } catch (error) {
-        console.error('Error loading failed projects:', error);
+        // Error loading failed projects
         
         // Show error state
         container.innerHTML = /*html*/ `

@@ -209,6 +209,9 @@
     color: var(--text-color);
     font-weight: 600;
     font-family: 'Courier New', monospace;
+    word-break: break-word;
+    text-align: right;
+    margin-left: 10px;
 }
 
 .audit-updated {
@@ -999,6 +1002,106 @@
     .levels-grid {
         grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
         gap: 10px;
+    }
+    
+    /* Audit Ratio Popup responsive */
+    .audit-ratio-popup {
+        max-width: 95%;
+        margin: 10px;
+    }
+
+    .audit-ratio-header {
+        padding: 15px 20px;
+    }
+
+    .audit-ratio-header h3 {
+        font-size: 1.2em;
+        flex-wrap: wrap;
+    }
+
+    .audit-ratio-content {
+        padding: 20px 15px;
+    }
+
+    .audit-ratio-summary {
+        flex-direction: column;
+        gap: 15px;
+        padding: 15px;
+    }
+
+    .audit-summary-item {
+        width: 100%;
+    }
+
+    .audit-summary-label {
+        font-size: 12px;
+    }
+
+    .audit-summary-value {
+        font-size: 20px;
+        word-break: break-word;
+        text-align: center;
+    }
+
+    .audit-detail-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        padding: 12px 15px;
+    }
+
+    .audit-detail-label {
+        font-size: 13px;
+        width: 100%;
+    }
+
+    .audit-detail-value {
+        font-size: 14px;
+        text-align: left;
+        margin-left: 0;
+        width: 100%;
+        word-break: break-all;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .audit-ratio-popup {
+        max-width: 100%;
+        margin: 5px;
+        border-radius: 15px;
+    }
+
+    .audit-ratio-header {
+        padding: 12px 15px;
+    }
+
+    .audit-ratio-header h3 {
+        font-size: 1em;
+    }
+
+    .audit-ratio-content {
+        padding: 15px 10px;
+    }
+
+    .audit-ratio-summary {
+        padding: 12px;
+        gap: 12px;
+    }
+
+    .audit-summary-value {
+        font-size: 18px;
+    }
+
+    .audit-detail-item {
+        padding: 10px 12px;
+    }
+
+    .audit-detail-label {
+        font-size: 12px;
+    }
+
+    .audit-detail-value {
+        font-size: 13px;
     }
 }
 
