@@ -29,7 +29,7 @@ export const renderGlobalStatistics = async () => {
         
         container.innerHTML = /*html*/ `
         <div class="chart-border"></div>
-        <h2 class="global-stats-title">Global Statistics</h2>
+        <h2 class="global-stats-title">Global Statistics for Core Education</h2>
         <div class="global-stats-container">
             <div class="global-stat-card" id="audit-ratio-card">
                 <div class="global-stat-icon">⚖️</div>
@@ -58,12 +58,10 @@ export const renderGlobalStatistics = async () => {
         await renderZzleGame();
 
     } catch (error) {
-        console.error('Error loading global statistics:', error);
-        
         // Show error state
         container.innerHTML = /*html*/ `
         <div class="chart-border"></div>
-        <h2 class="global-stats-title">Global Statistics</h2>
+        <h2 class="global-stats-title">Global Statistics for Core Education</h2>
         <div class="global-stats-container">
             <div class="global-stat-card">
                 <div class="global-stat-icon">⚖️</div>

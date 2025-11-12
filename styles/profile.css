@@ -1363,6 +1363,7 @@ svg {
     font-family: inherit;
 }
 
+
 .progress-line {
     stroke: var(--primary-color);
     stroke-width: 2;

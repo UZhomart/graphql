@@ -36,7 +36,7 @@ export const renderSuccessfulProjects = async () => {
         });
 
     } catch (error) {
-        console.error('Error loading successful projects:', error);
+        // Error loading successful projects
         
         // Show error state
         container.innerHTML = /*html*/ `

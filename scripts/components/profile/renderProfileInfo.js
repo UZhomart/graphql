@@ -26,7 +26,7 @@ export const renderProfileInfo = async () => {
                 handleLogout();
                 return;
             }
-            console.error(error);
+            // Error loading profile info
             // Set data to null if there was an error
             data = null;
         });

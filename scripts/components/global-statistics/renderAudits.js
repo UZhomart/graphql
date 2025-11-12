@@ -38,7 +38,7 @@ export const renderAudits = async () => {
         });
 
     } catch (error) {
-        console.error('Error loading audits:', error);
+        // Error loading audits
         
         // Show error state
         container.innerHTML = /*html*/ `

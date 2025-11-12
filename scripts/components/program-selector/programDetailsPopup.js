@@ -21,6 +21,10 @@ export const showProgramDetailsPopup = async (program = 'core-education', type =
                 <div class="program-details" id="program-details" style="display: none;">
                     <!-- Content will be populated here -->
                 </div>
+                <div class="popup-footnote" id="popup-footnote" style="display: none; padding: 15px 0 0; margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.85em; color: var(--text-color-secondary);">
+                    <sup style="color: var(--primary-color);">*</sup> <strong>What is a Transaction?</strong><br>
+                    A Transaction = the moment when a project/assignment was successfully accepted (not a commit!). It's a record of XP awarded for completed work.
+                </div>
             </div>
         </div>
     `;
@@ -66,7 +70,6 @@ async function loadProgramData(program, type) {
         }
         
     } catch (error) {
-        console.error('Error loading program data:', error);
         if (typeof error === "string" && error.includes('JWTExpired')) handleLogout();
         
         document.getElementById('program-loading').innerHTML = 'Error loading program data';
@@ -89,7 +92,66 @@ async function loadXPData(program, token, type) {
         }
     `;
     
-    const response = await fetchGraphQL(query, {}, token);
+    // Get level data - different queries for different programs
+    let levelQuery = '';
+    switch(program) {
+        case 'core-education':
+            levelQuery = `
+                query {
+                    transaction(
+                        where: {_and: [{type: {_eq: "level"}}, {event: {object: {name: {_eq: "Module"}}}}]}
+                        order_by: {amount: desc}
+                        limit: 1
+                    ) {
+                        amount
+                    }
+                }
+            `;
+            break;
+        case 'piscine-js':
+            levelQuery = `
+                query {
+                    transaction(
+                        where: {_and: [{type: {_eq: "level"}}, {event: {object: {name: {_eq: "Piscine JS"}}}}]}
+                        order_by: {amount: desc}
+                        limit: 1
+                    ) {
+                        amount
+                    }
+                }
+            `;
+            break;
+        case 'piscine-go':
+            levelQuery = `
+                query {
+                    transaction(
+                        where: {_and: [{type: {_eq: "level"}}, {path: {_like: "%piscinego%"}}]}
+                        order_by: {amount: desc}
+                        limit: 1
+                    ) {
+                        amount
+                    }
+                }
+            `;
+            break;
+        default:
+            levelQuery = `
+                query {
+                    transaction(
+                        where: {_and: [{type: {_eq: "level"}}, {event: {object: {name: {_eq: "Module"}}}}]}
+                        order_by: {amount: desc}
+                        limit: 1
+                    ) {
+                        amount
+                    }
+                }
+            `;
+    }
+    
+    const [response, levelResponse] = await Promise.all([
+        fetchGraphQL(query, {}, token),
+        fetchGraphQL(levelQuery, {}, token)
+    ]);
     
     if (response.errors) {
         throw new Error(response.errors[0].message);
@@ -119,8 +181,14 @@ async function loadXPData(program, token, type) {
             programTransactions = transactions;
     }
     
+    // Get level from level query
+    let level = 0;
+    if (levelResponse.data && levelResponse.data.transaction && levelResponse.data.transaction[0]) {
+        level = levelResponse.data.transaction[0].amount;
+    }
+    
     // Update popup with data
-    updateXPDetails(programTransactions, type);
+    updateXPDetails(programTransactions, type, level);
 }
 
 async function loadLevelData(program, token) {
@@ -198,10 +266,18 @@ async function loadLevelData(program, token) {
     updateLevelDetails(levelData);
 }
 
-function updateXPDetails(transactions, type) {
+function updateXPDetails(transactions, type, level = 0) {
     const totalXP = transactions.reduce((sum, t) => sum + (t.amount || 0), 0);
     
     const detailsContainer = document.getElementById('program-details');
+    const footnote = document.getElementById('popup-footnote');
+    
+    // Show footnote for XP and transactions types
+    if (footnote && (type === 'xp' || type === 'transactions')) {
+        footnote.style.display = 'block';
+    } else if (footnote) {
+        footnote.style.display = 'none';
+    }
     
     if (type === 'xp') {
         detailsContainer.innerHTML = /*html*/ `
@@ -216,11 +292,11 @@ function updateXPDetails(transactions, type) {
                 </div>
                 <div class="summary-item">
                     <span class="summary-label">Your Level:</span>
-                    <span class="summary-value">27 LVL</span>
+                    <span class="summary-value">${level} LVL</span>
                 </div>
             </div>
             <div class="xp-transactions">
-                <h4>Recent Transactions</h4>
+                <h4>Recent Transactions<sup style="color: var(--primary-color); font-size: 0.7em; cursor: help;">*</sup></h4>
                 <div class="transactions-list" id="transactions-list">
                     ${transactions.length === 0 ? 
                         '<div class="no-data">No transactions found for this program</div>' :
@@ -253,7 +329,7 @@ function updateXPDetails(transactions, type) {
                 </div>
             </div>
             <div class="xp-transactions">
-                <h4>All Transactions</h4>
+                <h4>All Transactions<sup style="color: var(--primary-color); font-size: 0.7em; cursor: help;">*</sup></h4>
                 <div class="transactions-list" id="transactions-list">
                     ${transactions.length === 0 ? 
                         '<div class="no-data">No transactions found for this program</div>' :
@@ -282,6 +358,12 @@ function updateXPDetails(transactions, type) {
 
 function updateLevelDetails(levelData) {
     const detailsContainer = document.getElementById('program-details');
+    const footnote = document.getElementById('popup-footnote');
+    
+    // Hide footnote for level type
+    if (footnote) {
+        footnote.style.display = 'none';
+    }
     
     detailsContainer.innerHTML = /*html*/ `
         <div class="level-summary">
