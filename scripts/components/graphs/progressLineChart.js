@@ -93,7 +93,7 @@ export async function renderProgressLineChart(userId) {
 }
 
 function processProgressData(transactions) {
-    const sortedTransactions = transactions.sort((a, b) => 
+    const sortedTransactions = transactions.sort((a, b) =>
         new Date(a.createdAt) - new Date(b.createdAt)
     );
 
@@ -103,7 +103,7 @@ function processProgressData(transactions) {
     sortedTransactions.forEach(transaction => {
         const date = new Date(transaction.createdAt);
         const dateKey = date.toISOString().split('T')[0];
-        
+
         if (!dailyData[dateKey]) {
             dailyData[dateKey] = {
                 date: dateKey,
@@ -112,7 +112,7 @@ function processProgressData(transactions) {
                 cumulativeXP: 0
             };
         }
-        
+
         dailyData[dateKey].xp += transaction.amount || 0;
         dailyData[dateKey].transactions.push(transaction);
     });
@@ -183,7 +183,7 @@ function renderLineChartSVG(data) {
     let maxLabels = window.innerWidth < 480 ? 5 : window.innerWidth < 768 ? 8 : 12;
     const labelInterval = Math.max(1, Math.floor(data.length / maxLabels));
     const processedIndices = new Set();
-    
+
     // Add labels at intervals
     for (let i = 0; i < data.length; i += labelInterval) {
         const x = padding.left + (i * xScale);
@@ -195,7 +195,7 @@ function renderLineChartSVG(data) {
         });
         processedIndices.add(i);
     }
-    
+
     // Always add the last point if not already included
     const lastIndex = data.length - 1;
     if (!processedIndices.has(lastIndex)) {
@@ -207,13 +207,13 @@ function renderLineChartSVG(data) {
             index: lastIndex
         });
     }
-    
+
     // Sort by index to maintain order
     xLabels.sort((a, b) => a.index - b.index);
 
     // Build SVG
     let svg = `<svg width="${width}" height="${height}" class="line-chart-svg" viewBox="0 0 ${width} ${height}">`;
-    
+
     // Grid
     svg += '<g class="grid">';
     for (let i = 0; i <= 5; i++) {
@@ -282,33 +282,33 @@ function showTooltip(e, dataPoint) {
     const tooltipRect = tooltip.getBoundingClientRect();
     const tooltipWidth = tooltipRect.width;
     const tooltipHeight = tooltipRect.height;
-    
+
     // Get mouse position relative to viewport
     const mouseX = e.clientX;
     const mouseY = e.clientY;
-    
+
     // Calculate initial position
     let left = mouseX + 15;
     let top = mouseY - tooltipHeight - 15;
 
     // Boundary checks with margins
     const margin = 10;
-    
+
     // Check right boundary
     if (left + tooltipWidth > window.innerWidth - margin) {
         left = mouseX - tooltipWidth - 15;
     }
-    
+
     // Check left boundary
     if (left < margin) {
         left = margin;
     }
-    
+
     // Check top boundary
     if (top < margin) {
         top = mouseY + 15;
     }
-    
+
     // Check bottom boundary
     if (top + tooltipHeight > window.innerHeight - margin) {
         top = window.innerHeight - tooltipHeight - margin;
@@ -379,7 +379,7 @@ function cleanProjectName(name) {
     let cleaned = name
         .replace(/^(project|exercise|piscine|module)\s*/i, '')
         .replace(/\s*(project|exercise|piscine|module)$/i, '')
-        .replace(/^(piscine-js|piscine-go|piscine-c)\s*/i, '')
+        .replace(/^(piscine-js|piscine-go|piscine-c|piscine-ai)\s*/i, '')
         .replace(/^(core-education|module)\s*/i, '')
         .trim();
     return cleaned.length < 2 ? name : cleaned;
@@ -425,7 +425,7 @@ function showDetailedPopup(data) {
                                     <div class="progress-transaction-time">${new Date(t.createdAt).toLocaleTimeString()}</div>
                                 </div>
                                 <div class="progress-transaction-xp">
-                                    <span class="progress-xp-amount">+${t.amount} XP</span>
+                                    <span class="progress-xp-amount">${t.amount} XP</span>
                                 </div>
                             </div>
                         `).join('')}
@@ -434,7 +434,7 @@ function showDetailedPopup(data) {
             </div>
         </div>
     `;
-    
+
     document.body.appendChild(overlay);
 
     // Close

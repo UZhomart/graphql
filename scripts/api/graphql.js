@@ -208,6 +208,20 @@ query GetEventUserLevelsByLogin($login: String!) {
       firstName
     }
   }
+  piscine_ai: event_user(
+    where: {eventId: {_eq: 328}, publicUser: {login: {_eq: $login}}}
+    order_by: {level: desc}
+  ) {
+    id
+    userAuditRatio
+    userLogin
+    level
+    publicUser {
+      id
+      lastName
+      firstName
+    }
+  }
 }`
 
 export const GET_GAMES_INFO = /*gql*/`

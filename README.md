@@ -39,7 +39,7 @@ A modern, interactive dashboard for Tomorrow School students to view their learn
 
 #### 🎯 Program Selector
 
-- **Three Programs**: Core Education, Piscine JS, Piscine Go
+- **Four Programs**: Core Education, Piscine JS, Piscine Go, Piscine AI
 - **Dynamic Statistics**: Program-specific XP, Level, and Transaction counts
 - **Interactive Cards**: Hover effects and clickable statistics
 - **Detailed Popups**: Comprehensive program analytics
@@ -57,7 +57,7 @@ A modern, interactive dashboard for Tomorrow School students to view their learn
 
 - **Smart Search**: Priority-based search with exact login matching
 - **Clear Search**: Red clear button (X) to reset all search results
-- **Public Data**: Display ID, Login, First Name, and Last Name, audit ratio, levels on each program
+- **Public Data**: Display ID, Login, First Name, and Last Name, audit ratio, levels on each program (including Piscine AI)
 - **Real-time Search**: Instant filtering as you type
 - **Teamwork Analytics**: Comprehensive collaboration statistics
 
@@ -172,7 +172,7 @@ graphql-master/
 │   │   │   └── renderProfileInfo.js # Profile information with expandable details
 │   │   ├── 📁 program-selector/
 │   │   │   ├── programDetailsPopup.js # Unified modal for XP, Level, and Transaction details
-│   │   │   └── renderProgramSelector.js # Program selection buttons and statistics cards
+│   │   │   └── renderProgramSelector.js # Program selection (Core, JS, Go, AI) and statistics cards
 │   │   ├── 📁 participants-info/
 │   │   │   ├── renderParticipantsInfo.js # Participants search and information display component
 │   │   │   ├── soloProjectsPopup.js     # Solo projects popup modal with detailed list
@@ -209,7 +209,7 @@ graphql-master/
 - **`authComponent.js`**: Modern login page with Tomorrow School branding, glassmorphism design, and animated backgrounds
 - **`profileComponent.js`**: Main dashboard orchestrator that renders all sections in proper order
 - **`renderProfileInfo.js`**: User profile information with expandable "More" section for additional details
-- **`renderProgramSelector.js`**: Program selection (Core Education, Piscine JS, Piscine Go) with dynamic statistics
+- **`renderProgramSelector.js`**: Program selection (Core Education, Piscine JS, Piscine Go, Piscine AI) with dynamic statistics
 - **`renderGlobalStatistics.js`**: Global statistics container with audit ratio, audits, project statistics, and admission games (Memory & Zzle)
 - **`renderParticipantsInfo.js`**: Participants search and information display with login-based lookup
 
@@ -356,7 +356,7 @@ The project is automatically deployed to GitHub Pages. Any push to the `main` br
 ### Dashboard Navigation
 
 - **Profile Information**: View and expand your personal details
-- **Program Selector**: Switch between Core Education, Piscine JS, and Piscine Go
+- **Program Selector**: Switch between Core Education, Piscine JS, Piscine Go, and Piscine AI
 - **Global Statistics**: Click on any statistic card for detailed information including admission games performance
 - **Participants Search**: Search for other students with smart exact-match priority
 - **Teamwork Analytics**: View collaboration statistics and solo project details
@@ -407,7 +407,7 @@ Click the "Logout" button in the top-right corner to securely end your session.
 
 ### 📊 Comprehensive Statistics
 
-- **Program-specific Data**: Dynamic statistics for Core Education, Piscine JS, and Piscine Go
+- **Program-specific Data**: Dynamic statistics for Core Education, Piscine JS, Piscine Go, and Piscine AI
 - **Global Analytics**: Audit ratios, project success rates, and performance metrics
 - **Admission Games**: Memory and Zzle game performance with level progression and attempt statistics
 - **Visual Data**: Interactive charts and graphs for progress tracking
