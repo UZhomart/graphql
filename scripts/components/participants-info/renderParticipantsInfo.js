@@ -188,30 +188,23 @@ async function renderParticipantProgramStats(participant) {
 
         const data = response && response.data ? response.data : {};
         const core = Array.isArray(data.core) && data.core.length ? data.core[0] : null;
-        const piscineJs = Array.isArray(data.piscine_js) && data.piscine_js.length
-            ? data.piscine_js.reduce((best, cur) => (best && best.level > cur.level ? best : cur), null)
-            : null;
-        const piscineGo = Array.isArray(data.piscine_go) && data.piscine_go.length
-            ? data.piscine_go.reduce((best, cur) => (best && best.level > cur.level ? best : cur), null)
-            : null;
-        const piscineAi = Array.isArray(data.piscine_ai) && data.piscine_ai.length
-            ? data.piscine_ai.reduce((best, cur) => (best && best.level > cur.level ? best : cur), null)
-            : null;
+
+        const jsStats = calcPiscineStats(data.piscine_js);
+        const goStats = calcPiscineStats(data.piscine_go);
+        const aiStats = calcPiscineStats(data.piscine_ai);
+        const rustStats = calcPiscineStats(data.piscine_rust);
 
         const auditRatio = core && typeof core.userAuditRatio === 'number'
             ? core.userAuditRatio
             : (core && core.userAuditRatio) || '—';
         const coreLevel = core ? (core.level ?? '—') : '—';
-        const jsLevel = piscineJs ? (piscineJs.level ?? '—') : '—';
-        const goLevel = piscineGo ? (piscineGo.level ?? '—') : '—';
-        const aiLevel = piscineAi ? (piscineAi.level ?? '—') : '—';
 
         const auditDisplay = typeof auditRatio === 'number' ? auditRatio.toFixed(4) : auditRatio;
 
         const fullName = `${participant.firstName || ''} ${participant.lastName || ''}`.trim() || 'Not specified';
 
         container.innerHTML = `
-            <div class="participant-circles-row six-cols">
+            <div class="participant-circles-row seven-cols">
                 <div class="program-stat-card info-card">
                     <div class="info-lines">
                         <div class="mini-row"><span class="mini-label">ID</span><span class="mini-value">${participant.id}</span></div>
@@ -233,31 +226,56 @@ async function renderParticipantProgramStats(participant) {
                     </div>
                     <div class="stat-label">Core Education</div>
                 </div>
-                <div class="program-stat-card">
-                    <div class="stat-circle">
-                        <span class="stat-number">${jsLevel}</span>
-                        <span class="stat-unit">LVL</span>
-                    </div>
-                    <div class="stat-label">Piscine JS</div>
-                </div>
-                <div class="program-stat-card">
-                    <div class="stat-circle">
-                        <span class="stat-number">${goLevel}</span>
-                        <span class="stat-unit">LVL</span>
-                    </div>
-                    <div class="stat-label">Piscine GO</div>
-                </div>
-                <div class="program-stat-card">
-                    <div class="stat-circle">
-                        <span class="stat-number">${aiLevel}</span>
-                        <span class="stat-unit">LVL</span>
-                    </div>
-                    <div class="stat-label">Piscine AI</div>
-                </div>
+                ${buildPiscineCard('Piscine JS', jsStats)}
+                ${buildPiscineCard('Piscine GO', goStats)}
+                ${buildPiscineCard('Piscine AI', aiStats)}
+                ${buildPiscineCard('Piscine Rust', rustStats)}
             </div>
         `;
     } catch (e) {
         container.innerHTML = `<div class="tables-error">Failed to load program data</div>`;
         // Failed to load event user levels
     }
+}
+
+// ── Piscine helpers ─────────────────────────────────────────────────────────
+
+/**
+ * From event_user array (ordered by eventId asc = cohort/attempt order):
+ * - attempts = number of cohorts the student participated in
+ * - bestLevel = highest level achieved across all cohorts
+ *
+ * NOTE: event_user.level is exercise progress, NOT piscine exam pass/fail.
+ * Real pass/fail lives in the private `result` table and is not accessible
+ * for other users, so we only show level + attempt count here.
+ */
+function calcPiscineStats(arr) {
+    if (!Array.isArray(arr) || arr.length === 0) return null;
+
+    const attempts = arr.length;
+    let bestLevel = 0;
+
+    for (const entry of arr) {
+        const lvl = entry.level ?? 0;
+        if (lvl > bestLevel) bestLevel = lvl;
+    }
+
+    return { attempts, bestLevel };
+}
+
+/**
+ * Renders one piscine stat card:
+ *   circle  → best level reached
+ *   badge   → "N attempt(s)" | "Not taken"
+ */
+function buildPiscineCard(label, stats) {
+    const lvl = stats ? stats.bestLevel : '—';
+    return `
+    <div class="program-stat-card">
+        <div class="stat-circle">
+            <span class="stat-number">${lvl}</span>
+            <span class="stat-unit">LVL</span>
+        </div>
+        <div class="stat-label">${label}</div>
+    </div>`;
 }

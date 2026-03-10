@@ -408,8 +408,13 @@
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 .teamwork-error {
@@ -651,26 +656,26 @@
         grid-template-columns: 1fr;
         gap: 15px;
     }
-    
+
     .stat-item {
         padding: 15px;
     }
-    
+
     .teammates-grid {
         grid-template-columns: 1fr;
         gap: 15px;
     }
-    
+
     .teammate-card {
         padding: 15px;
     }
-    
+
     .teammate-header {
         flex-direction: column;
         align-items: flex-start;
         gap: 10px;
     }
-    
+
     .projects-count {
         align-self: flex-end;
     }
@@ -1136,6 +1141,7 @@
 }
 
 @media screen and (max-width: 768px) {
+
     .solo-projects-popup,
     .unique-teammates-popup,
     .team-projects-popup {
@@ -1143,20 +1149,20 @@
         max-width: 95vw;
         margin: 0 2.5vw;
     }
-    
+
     .popup-content {
         max-height: 85vh;
         padding: 15px 20px 20px 20px;
     }
-    
+
     .popup-header {
         padding: 15px 20px;
     }
-    
+
     .popup-header h3 {
         font-size: 1.1rem;
     }
-    
+
     .popup-body {
         padding: 15px 20px 20px 20px;
     }
@@ -1171,7 +1177,7 @@
         grid-template-columns: 1fr;
         gap: 15px;
     }
-    
+
     .teammate-item {
         flex-direction: column;
         gap: 15px;
@@ -1225,6 +1231,7 @@
         min-width: auto;
     }
 }
+
 .participant-program-stats {
     width: 100%;
 }
@@ -1243,6 +1250,53 @@
     gap: 16px;
     align-items: stretch;
     flex-wrap: wrap;
+}
+
+.participant-circles-row.seven-cols {
+    display: flex;
+    justify-content: space-around;
+    gap: 12px;
+    align-items: stretch;
+    flex-wrap: wrap;
+}
+
+/* Piscine attempt badge shown below the label */
+.piscine-badge {
+    margin-top: 6px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.piscine-badge.badge-pass {
+    background: rgba(76, 175, 80, 0.15);
+    border: 1px solid #4caf50;
+    color: #4caf50;
+}
+
+.piscine-badge.badge-fail {
+    background: rgba(244, 67, 54, 0.12);
+    border: 1px solid #f44336;
+    color: #f44336;
+}
+
+.piscine-badge.badge-none {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.4);
+    font-weight: 500;
+    font-style: italic;
+}
+
+.piscine-badge.badge-neutral {
+    background: rgba(34, 211, 238, 0.08);
+    border: 1px solid rgba(34, 211, 238, 0.3);
+    color: rgba(34, 211, 238, 0.85);
+    font-weight: 600;
 }
 
 /* Reuse look and feel similar to program selector */
@@ -1289,8 +1343,36 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1));
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
     border-radius: 50%;
+}
+
+.participant-circles-row .stat-circle.passed {
+    border-color: #4caf50;
+    background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+}
+
+.participant-circles-row .stat-circle.passed .stat-number {
+    color: #2e7d32;
+}
+
+.participant-circles-row .stat-circle.passed .stat-unit {
+    color: #388e3c;
+}
+
+.participant-circles-row .stat-circle.failed {
+    border-color: #f44336;
+    background: linear-gradient(135deg, #ffebee, #ffcdd2);
+    box-shadow: 0 4px 15px rgba(244, 67, 54, 0.3);
+}
+
+.participant-circles-row .stat-circle.failed .stat-number {
+    color: #c62828;
+}
+
+.participant-circles-row .stat-circle.failed .stat-unit {
+    color: #d32f2f;
 }
 
 .participant-circles-row .stat-number {
@@ -1334,7 +1416,7 @@
         flex-direction: column;
         gap: 15px;
     }
-    
+
     .participant-circles-row .program-stat-card {
         min-width: auto;
         padding: 15px;
@@ -1346,21 +1428,21 @@
         flex-direction: column;
         gap: 15px;
     }
-    
+
     .participant-circles-row .program-stat-card {
         min-width: auto;
         padding: 15px;
     }
-    
+
     .participant-circles-row .stat-circle {
         width: 60px;
         height: 60px;
     }
-    
+
     .participant-circles-row .stat-number {
         font-size: 20px;
     }
-    
+
     .participant-circles-row .stat-unit {
         font-size: 10px;
     }
@@ -1371,29 +1453,30 @@
         flex-direction: column;
         gap: 12px;
     }
-    
+
     .participant-circles-row .program-stat-card {
         min-width: auto;
         padding: 12px;
     }
-    
+
     .participant-circles-row .stat-circle {
         width: 50px;
         height: 50px;
     }
-    
+
     .participant-circles-row .stat-number {
         font-size: 18px;
     }
-    
+
     .participant-circles-row .stat-unit {
         font-size: 9px;
     }
-    
+
     .participant-circles-row .stat-label {
         font-size: 12px;
     }
 }
+
 .participant-tables-row {
     display: flex;
     justify-content: space-around;
@@ -1403,7 +1486,7 @@
 
 .mini-table {
     background: var(--bg-color-light);
-    border: 1px solid rgba(255,255,255,0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;
     padding: 12px 14px;
 }
@@ -1427,17 +1510,29 @@
     gap: 8px;
 }
 
-.mini-label { opacity: 0.8; }
-.mini-value { font-weight: 600; }
+.mini-label {
+    opacity: 0.8;
+}
 
-.mini-row.centered { justify-content: center; }
-.mini-big { font-size: 18px; font-weight: 700; }
+.mini-value {
+    font-weight: 600;
+}
 
-.tables-loading, .tables-error {
+.mini-row.centered {
+    justify-content: center;
+}
+
+.mini-big {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.tables-loading,
+.tables-error {
     padding: 12px 14px;
     border-radius: 10px;
-    background: rgba(255,255,255,0.05);
-    border: 1px dashed rgba(255,255,255,0.1);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px dashed rgba(255, 255, 255, 0.1);
 }
 
 /* Responsive design for participant tables */
@@ -1446,7 +1541,7 @@
         flex-direction: column;
         gap: 12px;
     }
-    
+
     .mini-table {
         min-width: auto;
         padding: 10px 12px;
@@ -1458,16 +1553,16 @@
         flex-direction: column;
         gap: 10px;
     }
-    
+
     .mini-table {
         padding: 8px 10px;
     }
-    
+
     .mini-table-title {
         font-size: 14px;
         margin-bottom: 6px;
     }
-    
+
     .mini-row {
         gap: 6px;
     }
@@ -1478,22 +1573,23 @@
         flex-direction: column;
         gap: 8px;
     }
-    
+
     .mini-table {
         padding: 6px 8px;
     }
-    
+
     .mini-table-title {
         font-size: 12px;
         margin-bottom: 4px;
     }
-    
+
     .mini-row {
         gap: 4px;
         font-size: 12px;
     }
-    
-    .mini-label, .mini-value {
+
+    .mini-label,
+    .mini-value {
         font-size: 11px;
     }
 }
