@@ -62,6 +62,11 @@ query ViaUsers {
     login
     firstName
     lastName
+    canAccessPlatform
+    profile
+    labels {
+      labelName
+    }
   }
 }`
 
@@ -135,10 +140,11 @@ query GetTeamworkInfoV3($userId: Int!, $groupIds: [Int!]) {
 export const GET_EVENT_USER_LEVELS_BY_LOGIN = /*gql*/`
 query GetEventUserLevelsByLogin($login: String!) {
   core: event_user(
-    where: {eventId: {_eq: 96}, publicUser: {login: {_eq: $login}}}
+    where: {event: {path: {_eq: "/astanahub/module"}}, publicUser: {login: {_eq: $login}}}
     order_by: {userAuditRatio: desc}
   ) {
     id
+    eventId
     userAuditRatio
     userLogin
     level
@@ -146,6 +152,11 @@ query GetEventUserLevelsByLogin($login: String!) {
       id
       lastName
       firstName
+      canAccessPlatform
+      profile
+      labels {
+        labelName
+      }
     }
   }
   piscine_js: event_user(
@@ -217,7 +228,7 @@ query GetActivityData($userId: Int!) {
 export const GET_PARTICIPANT_PROGRAM_STATS_BY_ID = /*gql*/`
 query GetParticipantProgramStatsById($userId: Int!, $jsPath: String!, $goPath: String!, $aiPath: String!) {
   core: event_user(
-    where: {eventId: {_eq: 96}, userId: {_eq: $userId}}
+    where: {event: {path: {_eq: "/astanahub/module"}}, userId: {_eq: $userId}}
     order_by: {userAuditRatio: desc}
   ) {
     id

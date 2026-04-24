@@ -25,6 +25,9 @@ export const renderProgramSelector = async () => {
         <button class="program-btn" data-program="piscine-ai">
             Piscine AI
         </button>
+        <button class="program-btn" data-program="piscine-rust">
+            Piscine Rust
+        </button>
     </div>
     
     <div class="program-stats">
@@ -175,7 +178,20 @@ async function getProgramData(program, token) {
             levelQuery = `
                 query {
                     transaction(
-                        where: {_and: [{type: {_eq: "level"}}, {event: {id: {_eq: 328}}}]}
+                        where: {_and: [{type: {_eq: "level"}}, {event: {path: {_like: "%piscine-ai%"}}}]}
+                        order_by: {amount: desc}
+                        limit: 1
+                    ) {
+                        amount
+                    }
+                }
+            `;
+            break;
+        case 'piscine-rust':
+            levelQuery = `
+                query {
+                    transaction(
+                        where: {_and: [{type: {_eq: "level"}}, {path: {_like: "%piscine-rust%"}}]}
                         order_by: {amount: desc}
                         limit: 1
                     ) {
@@ -196,6 +212,7 @@ async function getProgramData(program, token) {
                     }
                 }
             `;
+            break;
     }
 
     const [xpResponse, levelResponse] = await Promise.all([
@@ -214,7 +231,10 @@ async function getProgramData(program, token) {
     switch (program) {
         case 'core-education':
             programTransactions = transactions.filter(t =>
-                t.path && t.path.startsWith('/astanahub/module/') && !t.path.startsWith('/astanahub/module/piscine-js/')
+                t.path && t.path.startsWith('/astanahub/module/') &&
+                !t.path.includes('/piscine-js/') &&
+                !t.path.includes('/piscine-ai/') &&
+                !t.path.includes('/piscine-rust/')
             );
             break;
         case 'piscine-js':
@@ -230,6 +250,11 @@ async function getProgramData(program, token) {
         case 'piscine-ai':
             programTransactions = transactions.filter(t =>
                 t.path && t.path.startsWith('/astanahub/module/piscine-ai/')
+            );
+            break;
+        case 'piscine-rust':
+            programTransactions = transactions.filter(t =>
+                t.path && t.path.startsWith('/astanahub/module/piscine-rust/')
             );
             break;
         default:

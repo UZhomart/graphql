@@ -407,7 +407,9 @@ Click the "Logout" button in the top-right corner to securely end your session.
 
 ### 📊 Comprehensive Statistics
 
-- **Program-specific Data**: Dynamic statistics for Core Education, Piscine JS, Piscine Go, and Piscine AI
+- **Program-specific Data**: Dynamic statistics for Core Education, Piscine JS, Piscine Go, Piscine AI, and Piscine Rust
+- **Access Monitoring**: Real-time display of student platform access status (Active/Blocked)
+- **Teammate Navigation**: Interactive teammate lists with clickable logins for quick profile switching
 - **Global Analytics**: Audit ratios, project success rates, and performance metrics
 - **Admission Games**: Memory and Zzle game performance with level progression and attempt statistics
 - **Visual Data**: Interactive charts and graphs for progress tracking
@@ -459,6 +461,25 @@ The project is hosted on GitHub Pages for free:
 - Font Awesome for the icon library
 - GitHub Pages for free hosting
 - The open-source community for inspiration and tools
+
+## 🧮 Data Calculation Logic
+
+The dashboard uses a **dynamic filtering system** to calculate XP and levels, avoiding unreliable hardcoded event IDs. This ensures the dashboard remains functional even if the school updates its event structure.
+
+### XP & Level Filtering (by Event Path)
+
+Instead of targeting specific database IDs, we filter transactions and event data based on their official URL paths:
+
+-   **Core Education**: Calculated using the base path `/astanahub/module/` while **explicitly excluding** nested sub-paths (`/piscine-js/`, `/piscine-ai/`, `/piscine-rust/`) to isolate clean Core progress.
+-   **Piscine JS**: Targets the full sub-path `/astanahub/module/piscine-js/`.
+-   **Piscine Go**: Targets the dedicated independent path `/astanahub/piscinego/`.
+-   **Piscine AI**: Targets the full sub-path `/astanahub/module/piscine-ai/`.
+-   **Piscine Rust**: Targets the full sub-path `/astanahub/module/piscine-rust/`.
+
+### Why this approach?
+1.  **Zero Hardcoding**: No need to update the source code when new cohorts or batches are added.
+2.  **Scalability**: New Piscine iterations are automatically detected if they follow the standard naming convention.
+3.  **Precision**: By using path-based filtering, we ensure that only relevant projects contribute to each specific program's statistics, maintaining high data integrity for audit ratios and level progress.
 
 ## License
 

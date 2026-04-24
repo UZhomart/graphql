@@ -32,7 +32,9 @@ export function showUniqueTeammatesPopup() {
                             <div class="unique-teammate-card">
                                 <div class="unique-teammate-info">
                                     <div class="unique-teammate-name">${teammate.user.firstName || ''} ${teammate.user.lastName || ''}</div>
-                                    <div class="unique-teammate-login">@${teammate.user.login}</div>
+                                    <div class="unique-teammate-login">
+                                        <span class="clickable-teammate" data-login="${teammate.user.login}" onclick="closeUniqueTeammatesPopup()">@${teammate.user.login}</span>
+                                    </div>
                                 </div>
                                 <div class="unique-teammate-stats">
                                     <span class="unique-projects-count">${teammate.projects.length}</span>
