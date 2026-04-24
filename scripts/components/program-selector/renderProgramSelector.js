@@ -22,6 +22,12 @@ export const renderProgramSelector = async () => {
         <button class="program-btn" data-program="piscine-go">
             Piscine Go
         </button>
+        <button class="program-btn" data-program="piscine-ai">
+            Piscine AI
+        </button>
+        <button class="program-btn" data-program="piscine-rust">
+            Piscine Rust
+        </button>
     </div>
     
     <div class="program-stats">
@@ -62,10 +68,10 @@ export const renderProgramSelector = async () => {
             document.querySelectorAll('.program-btn').forEach(b => b.classList.remove('active'));
             // Add active class to clicked button
             btn.classList.add('active');
-            
+
             // Update current program
             currentProgram = btn.dataset.program;
-            
+
             // Update program stats
             updateProgramStats();
         });
@@ -73,17 +79,17 @@ export const renderProgramSelector = async () => {
 
     // Add hover and click listeners for stat cards - all behave as one unit
     const statCards = document.querySelectorAll('.program-stat-card');
-    
+
     statCards.forEach(card => {
         // Add hover listeners to highlight all cards together
         card.addEventListener('mouseenter', () => {
             statCards.forEach(c => c.classList.add('hovered'));
         });
-        
+
         card.addEventListener('mouseleave', () => {
             statCards.forEach(c => c.classList.remove('hovered'));
         });
-        
+
         // Add click listeners - all show XP details
         card.addEventListener('click', () => showProgramDetails('xp'));
     });
@@ -95,15 +101,15 @@ export const renderProgramSelector = async () => {
 async function updateProgramStats() {
     try {
         const token = localStorage.getItem("JWT");
-        
+
         // Get program-specific data based on current program
         const programData = await getProgramData(currentProgram, token);
-        
+
         // Update the stat cards
         document.getElementById('program-xp').textContent = Math.floor(programData.xp);
         document.getElementById('program-level').textContent = programData.level;
         document.getElementById('program-transactions').textContent = programData.transactions;
-        
+
     } catch (error) {
         if (typeof error === "string" && error.includes('JWTExpired')) handleLogout();
     }
@@ -125,10 +131,10 @@ async function getProgramData(program, token) {
             }
         }
     `;
-    
+
     // Get level data - different queries for different programs
     let levelQuery = '';
-    switch(program) {
+    switch (program) {
         case 'core-education':
             levelQuery = `
                 query {
@@ -168,6 +174,32 @@ async function getProgramData(program, token) {
                 }
             `;
             break;
+        case 'piscine-ai':
+            levelQuery = `
+                query {
+                    transaction(
+                        where: {_and: [{type: {_eq: "level"}}, {event: {path: {_like: "%piscine-ai%"}}}]}
+                        order_by: {amount: desc}
+                        limit: 1
+                    ) {
+                        amount
+                    }
+                }
+            `;
+            break;
+        case 'piscine-rust':
+            levelQuery = `
+                query {
+                    transaction(
+                        where: {_and: [{type: {_eq: "level"}}, {path: {_like: "%piscine-rust%"}}]}
+                        order_by: {amount: desc}
+                        limit: 1
+                    ) {
+                        amount
+                    }
+                }
+            `;
+            break;
         default:
             levelQuery = `
                 query {
@@ -180,49 +212,63 @@ async function getProgramData(program, token) {
                     }
                 }
             `;
+            break;
     }
-    
+
     const [xpResponse, levelResponse] = await Promise.all([
         fetchGraphQL(xpQuery, {}, token),
         fetchGraphQL(levelQuery, {}, token)
     ]);
-    
+
     if (xpResponse.errors) {
         throw new Error(xpResponse.errors[0].message);
     }
-    
+
     const transactions = xpResponse.data.user[0].transactions;
-    
+
     // Filter transactions based on program using the same logic as renderAudits
     let programTransactions = [];
-    switch(program) {
+    switch (program) {
         case 'core-education':
-            programTransactions = transactions.filter(t => 
-                t.path && t.path.startsWith('/astanahub/module/') && !t.path.startsWith('/astanahub/module/piscine-js/')
+            programTransactions = transactions.filter(t =>
+                t.path && t.path.startsWith('/astanahub/module/') &&
+                !t.path.includes('/piscine-js/') &&
+                !t.path.includes('/piscine-ai/') &&
+                !t.path.includes('/piscine-rust/')
             );
             break;
         case 'piscine-js':
-            programTransactions = transactions.filter(t => 
+            programTransactions = transactions.filter(t =>
                 t.path && t.path.startsWith('/astanahub/module/piscine-js/')
             );
             break;
         case 'piscine-go':
-            programTransactions = transactions.filter(t => 
+            programTransactions = transactions.filter(t =>
                 t.path && t.path.startsWith('/astanahub/piscinego/')
+            );
+            break;
+        case 'piscine-ai':
+            programTransactions = transactions.filter(t =>
+                t.path && t.path.startsWith('/astanahub/module/piscine-ai/')
+            );
+            break;
+        case 'piscine-rust':
+            programTransactions = transactions.filter(t =>
+                t.path && t.path.startsWith('/astanahub/module/piscine-rust/')
             );
             break;
         default:
             programTransactions = transactions;
     }
-    
+
     const totalXP = programTransactions.reduce((sum, t) => sum + (t.amount || 0), 0);
-    
+
     // Get level from level query
     let level = 0;
     if (levelResponse.data && levelResponse.data.transaction && levelResponse.data.transaction[0]) {
         level = levelResponse.data.transaction[0].amount;
     }
-    
+
     return {
         xp: totalXP, // Don't round - show exact values
         level: level,

@@ -47,17 +47,17 @@ async function loadTeamworkData(userId) {
 
         // First, get all finished project groups for this user
         const groupsResponse = await fetchGraphQL(GET_FINISHED_PROJECT_GROUPS, { userId }, token);
-        
+
         if (groupsResponse && groupsResponse.errors) {
             // GraphQL errors
         }
-        
+
         if (!groupsResponse || !groupsResponse.data || !groupsResponse.data.group) {
             throw new Error('No finished project groups found');
         }
-        
+
         const allFinishedGroupIds = groupsResponse.data.group.map(g => g.id);
-        
+
         if (allFinishedGroupIds.length === 0) {
             teamworkData = [];
             displayTeamworkData();
@@ -65,20 +65,20 @@ async function loadTeamworkData(userId) {
             contentEl.style.display = 'block';
             return;
         }
-        
+
         // Second, get ALL audits for these groups
         const auditsResponse = await fetchGraphQL(GET_AUDITS_FOR_GROUPS, { groupIds: allFinishedGroupIds }, token);
-        
+
         if (auditsResponse && auditsResponse.errors) {
             // GraphQL errors for audits
         }
-        
+
         // Use all finished groups without filtering by audit results
         const finishedGroupIds = [...allFinishedGroupIds];
-        
+
         // Third, get teamwork data for these groups
         const response = await fetchGraphQL(GET_TEAMWORK_INFO_V3, { userId, groupIds: finishedGroupIds }, token);
-        
+
         if (response && response.data && response.data.group_user) {
             teamworkData = response.data.group_user;
             displayTeamworkData();
@@ -117,9 +117,9 @@ function displayTeamworkData() {
 
     // Group teammates by user (excluding current user and solo projects)
     const teammatesMap = {};
-    const currentUserId = parseInt(document.querySelector('[data-user-id]')?.getAttribute('data-user-id')) || 
-                         parseInt(localStorage.getItem('currentUserId')) || 0;
-    
+    const currentUserId = parseInt(document.querySelector('[data-user-id]')?.getAttribute('data-user-id')) ||
+        parseInt(localStorage.getItem('currentUserId')) || 0;
+
     // First, identify team projects (groups with more than 1 member)
     const groupMemberCounts = {};
     teamworkData.forEach(item => {
@@ -129,17 +129,17 @@ function displayTeamworkData() {
         }
         groupMemberCounts[groupId].add(item.user.id);
     });
-    
+
     teamworkData.forEach(item => {
         const userId = item.user.id;
         const groupId = item.group.id;
-        
+
         // Skip current user
         if (userId === currentUserId) return;
-        
+
         // Skip solo projects (groups with only 1 member)
         if (groupMemberCounts[groupId].size <= 1) return;
-        
+
         if (!teammatesMap[userId]) {
             teammatesMap[userId] = {
                 user: item.user,
@@ -151,7 +151,7 @@ function displayTeamworkData() {
 
     const teammates = Object.values(teammatesMap);
     const uniqueTeammates = teammates.length;
-    
+
     // Count unique team projects (projects with multiple participants)
     const teamProjectNames = new Set();
     Object.keys(groupMemberCounts).forEach(groupId => {
@@ -162,10 +162,10 @@ function displayTeamworkData() {
             }
         }
     });
-    
+
     const uniqueProjects = teamProjectNames.size;
     const totalCollaborations = teamworkData.filter(item => groupMemberCounts[item.group.id].size > 1).length;
-    
+
     // Count solo projects (projects with only 1 member)
     const soloProjectNames = new Set();
     Object.keys(groupMemberCounts).forEach(groupId => {
@@ -177,11 +177,11 @@ function displayTeamworkData() {
         }
     });
     const soloProjects = soloProjectNames.size;
-    
+
     // Store solo projects data for popup
     const soloProjectsData = Array.from(soloProjectNames).map(projectName => {
-        const projectData = teamworkData.find(item => 
-            item.group.object.name === projectName && 
+        const projectData = teamworkData.find(item =>
+            item.group.object.name === projectName &&
             groupMemberCounts[item.group.id].size === 1
         );
         return {
@@ -196,15 +196,15 @@ function displayTeamworkData() {
         }
         return 0;
     });
-    
+
     // Store in global scope for popup access
     window.soloProjectsData = soloProjectsData;
     window.uniqueTeammatesData = teammates;
-    
+
     // Store team projects data for popup
     const teamProjectsData = Array.from(teamProjectNames).map(projectName => {
-        const projectData = teamworkData.find(item => 
-            item.group.object.name === projectName && 
+        const projectData = teamworkData.find(item =>
+            item.group.object.name === projectName &&
             groupMemberCounts[item.group.id].size > 1
         );
         return {
@@ -266,7 +266,9 @@ function displayTeamworkData() {
                     <div class="teammate-header">
                         <div class="teammate-info">
                             <div class="teammate-name">${teammate.user.firstName || ''} ${teammate.user.lastName || ''}</div>
-                            <div class="teammate-login">@${teammate.user.login}</div>
+                            <div class="teammate-login">
+                                <span class="clickable-teammate" data-login="${teammate.user.login}">@${teammate.user.login}</span>
+                            </div>
                         </div>
                         <div class="projects-count">
                             <span class="count-badge">${teammate.projects.length}</span>
