@@ -4,6 +4,7 @@ import { renderTeamworkStatus } from './teamworkStatus.js';
 import './soloProjectsPopup.js';
 import './uniqueTeammatesPopup.js';
 import './teamProjectsPopup.js';
+import { getUserBatch } from '../../api/batchApi.js';
 
 let participantsData = [];
 
@@ -158,6 +159,7 @@ async function renderParticipantProgramStats(participant) {
         const coreLevel = core ? (core.level ?? '—') : '—';
         const auditDisplay = typeof auditRatio === 'number' ? auditRatio.toFixed(4) : auditRatio;
         const fullName = `${participant.firstName || ''} ${participant.lastName || ''}`.trim() || 'Not specified';
+        const batch = await getUserBatch(participant.id, token);
 
         container.innerHTML = `
             <div class="participant-circles-row seven-cols">
@@ -166,6 +168,7 @@ async function renderParticipantProgramStats(participant) {
                         <div class="mini-row"><span class="mini-label">ID</span><span class="mini-value">${participant.id}</span></div>
                         <div class="mini-row"><span class="mini-label">Login</span><span class="mini-value">${participant.login}</span></div>
                         <div class="mini-row"><span class="mini-label">Name</span><span class="mini-value">${fullName}</span></div>
+                        <div class="mini-row"><span class="mini-label">Batch</span><span class="mini-value">${batch ?? '—'}</span></div>
                         <div class="mini-row">
                             <span class="mini-label">Access</span>
                             <span class="mini-value status-badge ${participant.canAccessPlatform ? 'status-active' : 'status-blocked'}">
